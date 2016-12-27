@@ -1,0 +1,246 @@
+#!/usr/bin/python
+
+
+'''
+The MIT License (MIT)
+
+Copyright (c) 2016 Charles Lin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+'''
+
+
+#Main method run script for mycn code
+
+#See README for additional information on downloading and installing dependencies
+
+#Requires linlab pipeline set of utilities 
+#
+
+#Requires bamliquidator
+#
+
+#Requires 
+
+#==========================================================================
+#=============================DEPENDENCIES=================================
+#==========================================================================
+
+
+import sys, os
+# Get the script's full local path
+whereAmI = os.path.dirname(os.path.realpath(__file__))
+
+pipeline_dir = '/home/chazlin/src/pipeline/'
+
+sys.path.append(whereAmI)
+sys.path.append(pipeline_dir)
+
+import pipeline_dfci
+import utils
+import string
+import numpy
+import os
+import re
+from collections import defaultdict
+#==========================================================================
+#============================PARAMETERS====================================
+#==========================================================================
+
+
+
+projectName = 'mycn'
+genome ='hg19'
+annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
+
+#project folders
+projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+
+#standard folder names
+gffFolder ='%sgff/' % (projectFolder)
+macsFolder = '%smacsFolder/' % (projectFolder)
+macsEnrichedFolder = '%smacsEnriched/' % (projectFolder)
+mappedEnrichedFolder = '%smappedEnriched/' % (projectFolder)
+mappedFolder = '%smappedFolder/' % (projectFolder)
+wiggleFolder = '%swiggles/' % (projectFolder)
+metaFolder = '%smeta/' % (projectFolder)
+metaRoseFolder = '%smeta_rose/' % (projectFolder)
+fastaFolder = '%sfasta/' % (projectFolder)
+bedFolder = '%sbed/' % (projectFolder)
+
+#mask Files
+maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
+
+#genomeDirectory
+genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+
+#making folders
+folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder]
+
+for folder in folderList:
+    pipeline_dfci.formatFolder(folder,True)
+
+
+
+#==========================================================================
+#============================LIST OF DATAFILES=============================
+#==========================================================================
+
+
+#this project will utilize multiple datatables
+#data tables are organized largely by type/system
+#some data tables overlap for ease of analysis
+
+
+
+#list of dataFiles
+
+#ATAC-Seq
+atac_dataFile = '/grail/projects/%s/data_tables/ATAC_TABLE.txt' % (projectName)
+
+#ChIP-Seq
+be2c_dataFile = '%sdata_tables/BE2C_TABLE.txt' % (projectFolder)
+mm1s_dataFile = '%sdata_tables/MM1S_TABLE.txt' % (projectFolder)
+nb_all_chip_dataFile = '/grail/projects/%s/data_tables/NB_ALL.txt' % (projectName)
+p4936_young_dataFile = '/grail/projects/%s/data_tables/P493-6_YOUNG_TABLE.txt' % (projectName)
+sclc_dataFile = '%sdata_tables/SCLC_DATA_TABLE.txt' % (projectFolder)
+shep21_dataFile = '/grail/projects/%s/data_tables/SHEP21_TABLE.txt' % (projectName)
+shep_on_dataFile = '/grail/projects/%s/data_tables/SHEP_ON_TABLE.txt' % (projectName)
+
+chip_data_list = [be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile]
+#note: all mouse analysis of THMYCN tumors are in a separate script
+
+#CHIP-RX
+shep21_chiprx_dataFile = '%sdata_tables/SHEP21_CHIPRX_TABLE.txt' % (projectFolder)
+
+#RNA-Seq
+be2c_rna_drug_dataFile = '%sdata_tables/BE2C_RNA_DRUG_TABLE.txt' % (projectFolder)
+be2c_rna_twist_dataFile = '%sdata_tables/BE2C_RNA_TWIST_TABLE.txt' % (projectFolder)
+shep21_rna_dataFile = '%sdata_tables/SHEP21_DOX_RNA_TABLE.txt' % (projectFolder)
+
+#==========================================================================
+#===========================MAIN METHOD====================================
+#==========================================================================
+
+
+def main():
+
+
+    print('main analysis for MYCN project')
+
+    print('changing directory to project folder')
+    os.chdir(projectFolder)
+    print('#======================================================================')
+    print('#======================I, LOADING DATA ANNOTATION======================')
+    print('#======================================================================')
+
+
+    #This section sanity checks each data table and makes sure both bam and .bai files are accessible
+
+    #for ChIP-Seq
+    for dataFile in chip_data_list:
+
+        pipeline_dfci.summary(dataFile)
+
+
+    print('#======================================================================')
+    print('#==========================II. CALLING MACS============================')
+    print('#======================================================================')
+    # for dataFile in chip_data_list:
+    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #     namesList.sort()
+    #     print(namesList)
+    #     #for name in namesList:
+    #     #    print(dataDict[name]['bam'])
+    #     pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
+    #     os.chdir(projectFolder) # the silly call macs script has to change into the output dir
+    #     #so this takes us back to the project folder
+
+
+    # #sym linking peak beds
+    # file_string = '*_peaks.bed'
+    # source_dir = '%smacsFolder' % (projectFolder)
+    # dest_dir = '%smacsEnriched' % (projectFolder)
+    # utils.link_files(file_string,source_dir,dest_dir)
+
+    print('#======================================================================')
+    print('#==============III. DEFINING NB MYCN AND H3K27AC LANDSCAPE=============')
+    print('#======================================================================')
+
+    bashFileName = define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
+    print(bashFileName)
+    
+
+#==========================================================================
+#===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
+#==========================================================================
+
+
+#specific functions written for this analysis
+
+
+
+def define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile):
+
+    '''
+    defines the MYCN baseline using MYCN chips from NGP, KELLY, BE2C, and SHEP21
+    uses the meta rose code and writes out a .sh file for reproducibility
+    '''
+
+    #For MYCN baseline
+    #no TSS exclusion and no stitching
+
+    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+    analysisName = 'NB_MYCN'
+    namesList = [name for name in dataDict.keys() if name.count('MYCN') == 1]
+
+    bamFileList = [dataDict[name]['bam'] for name in namesList]
+    bamString = string.join(bamFileList,',')
+
+    controlBams = [dataDict[name]['background'] for name in namesList]
+    controlFileList = [dataDict[name]['bam'] for name in controlBams]
+    controlBamString = string.join(controlFileList,',')
+
+    bedFileList = [macsEnrichedFolder + dataDict[name]['enrichedMacs'] for name in namesList]
+    bedString = string.join(bedFileList,',')
+
+    roseFolder = '%smeta_rose/' % (projectFolder)
+    roseFolder = utils.formatFolder(roseFolder,True)
+
+    outputFolder = '%s%s/' % (roseFolder,analysisName)
+    bashFileName = '%s%s_meta_rose.sh' % (roseFolder,analysisName)
+
+    bashFile = open(bashFileName,'w')
+    bashFile.write('#!/usr/bin/bash\n\n')
+    bashFile.write('cd %s\n' % (pipeline_dir))
+
+    metaRoseCmd = 'python %sROSE2_META.py -g hg19 -i %s -r %s -c %s -o %s -n %s -t 0 -s 0 --mask %s' % (pipeline_dir,bedString,bamString,controlBamString,outputFolder,analysisName,maskFile)
+
+    bashFile.write(metaRoseCmd + '\n')
+    bashFile.close()
+    return bashFileName
+
+#==========================================================================
+#==================================THE END=================================
+#==========================================================================
+
+    
+if __name__=="__main__":
+    main()
