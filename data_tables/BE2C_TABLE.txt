@@ -1,0 +1,10 @@
+FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	FASTQ_FILE
+./bam/hg19/	20130405_472	hg19	BE2C_BRD4	BE2C_INPUT		BE2C_BRD4_peaks.bed	0,0,205	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/BRD4/20130405_472/GTGAAA-s_3_1_sequence.txt.tar.gz
+./bam/hg19/	20130110_463	hg19	BE2C_H3K27AC	BE2C_INPUT		BE2C_H3K27AC_peaks.bed	255,69,0	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/H3K27Ac/20130110_463/ACTTGA-s_5_1_sequence.txt.tar.gz
+./bam/hg19/	20130618_467	hg19	BE2C_H3K27ME3	BE2C_INPUT		BE2C_H3K27ME3_peaks.bed	112,128,144	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/H3K27ME3/20130618_467/ACAGTG-s_3_1_sequence.txt.tar.gz
+./bam/hg19/	20130110_462	hg19	BE2C_H3K4ME3	BE2C_INPUT		BE2C_H3K4ME3_peaks.bed	0,205,0	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/H3K4Me3/20130110_462/CAGATC-s_5_1_sequence.txt.tar.gz
+./bam/hg19/	20130110_1296	hg19	BE2C_INPUT	NONE		NONE	0,0,0	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/None/20130110_1296/ACAGTG-s_5_1_sequence_copy.txt.tar.gz
+./bam/hg19/	20130405_468	hg19	BE2C_MYC	BE2C_INPUT		BE2C_MYC_peaks.bed	205,0,0	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/MYC/20130405_468/AGTTCC-s_3_1_sequence.txt.tar.gz
+./bam/hg19/	20130405_471	hg19	BE2C_MYCN	BE2C_INPUT		BE2C_MYCN_peaks.bed	205,0,0	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/MYCN/20130405_471/GTCCGC-s_3_1_sequence.txt.tar.gz
+./bam/hg19/	20130110_461	hg19	BE2C_RNA_POL2	BE2C_INPUT		BE2C_RNA_POL2_peaks.bed	0,0,0	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/RNA.POL2/20130110_461/GCCAAT-s_5_1_sequence.txt.tar.gz
+./bam/hg19/	20151203_5615	hg19	BE2C_TWIST	BE2C_INPUT		BE2C_TWIST_peaks.bed	0,205,205	/grail/TONY/Bradner/Homo.sapiens/Neuroblastoma/BE2C/TWIST/20151203_5615/20151202-BE2C-TWIST-ML2529_S6_R1_001.fastq.gz

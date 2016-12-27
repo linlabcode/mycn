@@ -1,0 +1,7 @@
+FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	FASTQ_FILE
+./bam/hg19/	20120522_6182	hg19	H128_H3K27AC	H128_INPUT		H128_H3K27AC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444437/SRR444437.sra
+./bam/hg19/	20120522_524	hg19	H128_INPUT	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444472/SRR444472.sra
+./bam/hg19/	20120522_523	hg19	H128_MYC	H128_INPUT		H128_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444469/SRR444469.sra
+./bam/hg19/	20120522_5459	hg19	H2171_H3K27AC	H2171_INPUT		H2171_H3K27AC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444438/SRR444438.sra
+./bam/hg19/	20120522_526	hg19	H2171_INPUT	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444476/SRR444476.sra
+./bam/hg19/	20120522_525	hg19	H2171_MYC	H2171_INPUT		H2171_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444473/SRR444473.sra

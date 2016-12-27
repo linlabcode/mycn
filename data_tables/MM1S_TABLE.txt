@@ -1,0 +1,4 @@
+FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	FASTQ_FILE
+./bam/hg19/	20120522_675	hg19	MM1S_H3K27AC_DMSO	MM1S_WCE_DMSO		MM1S_H3K27AC_DMSO_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444454/SRR444454.sra
+./bam/hg19/	20120522_530	hg19	MM1S_MYC_DMSO	MM1S_WCE_DMSO		MM1S_MYC_DMSO_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444479/SRR444479.sra
+./bam/hg19/	20120522_531	hg19	MM1S_WCE_DMSO	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444481/SRR444481.sra

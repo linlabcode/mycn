@@ -1,0 +1,22 @@
+FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	FASTQ_FILE
+./bam/hg19_ercc/	20150311_3501	hg19_ercc	SHEP21_0HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3501/20150311-RZ-1-RZ1721_S1_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3502	hg19_ercc	SHEP21_0HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3502/20150311-RZ-2-RZ1721_S2_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3503	hg19_ercc	SHEP21_0HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3503/20150311-RZ-3-RZ1721_S3_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3516	hg19_ercc	SHEP21_16HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3516/20150313-RZ-16-RZ1722_S6_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3517	hg19_ercc	SHEP21_16HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3517/20150313-RZ-17-RZ1722_S7_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3518	hg19_ercc	SHEP21_16HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3518/20150313-RZ-18-RZ1722_S8_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3519	hg19_ercc	SHEP21_24HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3519/20150313-RZ-19-RZ1722_S9_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3520	hg19_ercc	SHEP21_24HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3520/20150313-RZ-20-RZ1722_S10_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3549	hg19_ercc	SHEP21_24HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3549/20150313-RZ-21-RZ1722_S11_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3504	hg19_ercc	SHEP21_2HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3504/20150311-RZ-4-RZ1721_S4_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3505	hg19_ercc	SHEP21_2HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3505/20150311-RZ-5-RZ1721_S5_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3506	hg19_ercc	SHEP21_2HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3506/20150311-RZ-6-RZ1721_S6_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3507	hg19_ercc	SHEP21_4HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3507/20150311-RZ-7-RZ1721_S7_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3508	hg19_ercc	SHEP21_4HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3508/20150311-RZ-8-RZ1721_S8_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3509	hg19_ercc	SHEP21_4HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3509/20150311-RZ-9-RZ1721_S9_R1.fastq.gz
+./bam/hg19_ercc/	20150311_3510	hg19_ercc	SHEP21_6HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150311_3510/20150311-RZ-10-RZ1721_S10_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3511	hg19_ercc	SHEP21_6HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3511/20150313-RZ-11-RZ1722_S1_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3512	hg19_ercc	SHEP21_6HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3512/20150313-RZ-12-RZ1722_S2_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3513	hg19_ercc	SHEP21_8HR_rep1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3513/20150313-RZ-13-RZ1722_S3_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3514	hg19_ercc	SHEP21_8HR_rep2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3514/20150313-RZ-14-RZ1722_S4_R1.fastq.gz
+./bam/hg19_ercc/	20150313_3515	hg19_ercc	SHEP21_8HR_rep3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/SHEP21/RNA/20150313_3515/20150313-RZ-15-RZ1722_S5_R1.fastq.gz
