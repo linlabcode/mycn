@@ -1,0 +1,14 @@
+#LIST OF DEPENDENCIES FOR CODE
+
+bamliquidator
+samtools
+macs 1.4.2
+macs2
+
+
+#R
+ggplot2
+affy
+
+#python
+numpy
