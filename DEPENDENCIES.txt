@@ -4,7 +4,8 @@ bamliquidator
 samtools
 macs 1.4.2
 macs2
-
+tabix
+bgzip
 
 #R
 ggplot2
