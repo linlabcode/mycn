@@ -85,6 +85,10 @@ fastaFolder = '%sfasta/' % (projectFolder)
 bedFolder = '%sbed/' % (projectFolder)
 figureCodeFolder = '%sfigureCode/' % (projectFolder)
 figuresFolder = '%sfigures/' % (projectFolder)
+geneListFolder = '%sgeneListFolder/' % (projectFolder)
+bedFolder = '%sbeds/' % (projectFolder)
+signalFolder = '%ssignalTables/' % (projectFolder)
+tableFolder = '%stables/' % (projectFolder)
 
 #mask Files
 maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
@@ -93,7 +97,7 @@ maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
-folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder]
+folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder]
 
 for folder in folderList:
     pipeline_dfci.formatFolder(folder,True)
@@ -163,30 +167,71 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
+    # #running peak finding using macs 1.4.2 on all chip datasets
+    # #this usually takes ~2-3 hours on a reasonably fast machine
+    # #a 3 hour time out on this entire operation is set
+    # #if peak calling takes longer than 3 hours, simply run the script again after completion
 
-    for dataFile in chip_data_list:
-        dataDict = pipeline_dfci.loadDataTable(dataFile)
-        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-        namesList.sort()
-        print(namesList)
-        #for name in namesList:
-        #    print(dataDict[name]['bam'])
-        pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
-        os.chdir(projectFolder) # the silly call macs script has to change into the output dir
-        #so this takes us back to the project folder
+    # for dataFile in chip_data_list:
+    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #     namesList.sort()
+    #     print(namesList)
+    #     #for name in namesList:
+    #     #    print(dataDict[name]['bam'])
+    #     pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
+    #     os.chdir(projectFolder) # the silly call macs script has to change into the output dir
+    #     #so this takes us back to the project folder
 
+    
+    # #to check for completeness, we will try to find all of the peak files
+    # peak_calling_done = False
+    # while not peak_calling_done:
+    #     for dataFile in chip_data_list:
+    #         dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #         namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #         for name in namesList:
+    #             peak_path = '%s%s%s/%s_peaks.bed' % (projectFolder,macsFolder,name,name)
+    #             if utils.checkOutput(peak_path,1,180):
+    #                 continue
+    #                 peak_calling_done =True
+    #             else:
+    #                 print('Error: peak calling timed out')
+    #                 sys.exit()
+        
+                    
+    # #now format the macs output
+    # for dataFile in chip_data_list:
+    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #     pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
+        
+    
+        
+    # #sym linking peak beds
+    # print('sym linking peak files to the macs enriched folder')
+    # file_string = '*_peaks.bed'
+    # source_dir = '%smacsFolder' % (projectFolder)
+    # dest_dir = '%smacsEnriched' % (projectFolder)
+    # utils.link_files(file_string,source_dir,dest_dir)
 
-    #sym linking peak beds
-    print('sym linking peak files to the macs enriched folder')
-    file_string = '*_peaks.bed'
-    source_dir = '%smacsFolder' % (projectFolder)
-    dest_dir = '%smacsEnriched' % (projectFolder)
-    utils.link_files(file_string,source_dir,dest_dir)
+    print('\n\n')
+    print('#======================================================================')
+    print('#===================III. DEFINING ACTIVE GENES IN NB===================')
+    print('#======================================================================')
+    print('\n\n')
+
+    
+    #here we will identify active promoters in various contexts as those with 
+    #an H3K27AC peak in the +/- 1kb tss region
+    #UCSC refseq annotations are used for all genes
+    #make_nb_active_gene_lists(nb_all_chip_dataFile)
+    #make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile)
 
 
     print('\n\n')
     print('#======================================================================')
-    print('#==============III. DEFINING NB MYCN AND H3K27AC LANDSCAPE=============')
+    print('#===============IV. DEFINING NB MYCN AND H3K27AC LANDSCAPE=============')
     print('#======================================================================')
     print('\n\n')
 
@@ -198,7 +243,7 @@ def main():
         print(enhancer_bashFileName)
         os.system('bash %s' % (enhancer_bashFileName))
 
-    sys.exit()
+
     #for mycn
     mycn_bashFileName,mycn_region_map_path,namesList = define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
 
@@ -207,20 +252,71 @@ def main():
         os.system('bash %s' % (mycn_bashFileName))
     
     #now we need to call the R script that creates the rank plots
-    if utils.checkOutput(region_map_path,1,30): #set a wait time for 30 minutes
+    if utils.checkOutput(mycn_region_map_path,1,30): #set a wait time for 30 minutes
         print('Found NB_MYCN meta_rose landscape and running rank plot R code')
-        name_string = ','.join(namesList) #provides the dataset names used
-        rank_script_path = '%sr_scripts/1_nb_mycn_rank.R' % (projectFolder)
-        r_cmd = 'Rscript %s %s %s %s' % (rank_script_path,region_map_path,name_string,projectFolder)
-        print(r_cmd)
-        os.system(r_cmd)
 
-    print('#======================================================================')
-    print('#=================IV. CREATING NB MYCN STATS TABLE=====================')
-    print('#======================================================================')
+        conserved_rank_path = '%smeta_rose/NB_MYCN/NB_MYCN_0KB_STITCHED_ENHANCER_REGION_RANK_CONSERVED.txt' % (projectFolder)
+        if utils.checkOutput(conserved_rank_path,0,0):
+            print('Identified NB rank conserved regions: %s' % (conserved_rank_path))
+        else:
+            print('Defining NB rank conserved regions')
+            name_string = ','.join(namesList) #provides the dataset names used
+            rank_script_path = '%sr_scripts/1_nb_mycn_rank.R' % (projectFolder)
+            r_cmd = 'Rscript %s %s %s %s' % (rank_script_path,mycn_region_map_path,name_string,projectFolder)
+            print(r_cmd)
+            os.system(r_cmd)
 
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#==========V. MAPPING MYCN AND H3K27AC TO MYCN REGIONS=================')
+    print('#======================================================================')
+    print('\n\n')
+    #here we will first make a gff of conserved NB MYCN regions
+    #and then map MYCN and H3K27ac signal 
+
+    print('Making a gff and bed of conserved NB MYCN regions:')
+    #mycn_gff_path,mycn_flank_gff_path = make_mycn_regions(conserved_rank_path) 
     
+    print('Mapping MYCN and H3K27AC signal')
+    #gffList = [mycn_gff_path,mycn_flank_gff_path]
+    #map_mycn_regions(nb_all_chip_dataFile,gffList)
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#==================VI. CREATING NB MYCN STATS TABLE====================')
+    print('#======================================================================')
+    print('\n\n')
     
+
+    mycn_table_path = '%stables/HG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (projectFolder)
+    if utils.checkOutput(mycn_table_path,0,0):
+        print('Identified MYCN table %s' % (mycn_table_path))
+    else:
+        print('Making MYCN stats table')        
+        mycn_table_path = make_mycn_stats_table(nb_all_chip_dataFile,mycn_table_path)
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=================VII. MAKING VECTOR COMPARISON PLOTS==================')
+    print('#======================================================================')
+    print('\n\n')
+
+    # compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
+    # r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
+    # print(r_cmd)
+    # os.system(r_cmd)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#==================VIII. RANKING EBOXES IN MYCN PEAKS==================')
+    print('#======================================================================')
+    print('\n\n')
+
+    mycn_gff_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+
+    rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,window = 100)
 
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
@@ -231,7 +327,118 @@ def main():
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~DEFINING NB MYCN BINDING LANDSCAPE~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~DEFINING NB ACTIVE GENES~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def make_nb_active_gene_lists(nb_all_chip_dataFile):
+
+    pipeline_dfci.makeGeneGFFs(annotFile,gffFolder,species=genome.upper())
+
+
+    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+    setName = 'NB_TSS_H3K27AC'
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['BE2C','KELLY','NGP','SHEP21']
+    namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
+
+    pipeline_dfci.mapEnrichedToGFF(nb_all_chip_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+    #this is for the union
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_NB_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['BE2C_H3K27AC'],['KELLY_H3K27AC'],['NGP_H3K27AC'],['SHEP21_0HR_H3K27AC_NOSPIKE']]
+    output = '%sgeneListFolder/HG19_NB_H3K27AC_ACTIVE_UNION.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+    #this is for individual NB datasets
+    namesList =['BE2C_H3K27AC','KELLY_H3K27AC','NGP_H3K27AC','SHEP21_0HR_H3K27AC_NOSPIKE']
+    for name in namesList:
+        mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_NB_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+        setList = [[name]]
+        output = '%sgeneListFolder/HG19_%s_ACTIVE.txt' % (projectFolder,name)
+        pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~DEFINING ACTIVE GENES IN OTHER LINES~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#now we need to make active gene lists in MM1S, P493-6, SCLC, and the SHEP ON system
+def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile):
+    #first map to enriched for each dataset
+
+    #for mm1s
+    dataDict = pipeline_dfci.loadDataTable(mm1s_dataFile)
+    setName = 'MM1S_TSS_H3K27AC'
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['MM1S']
+    namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
+    pipeline_dfci.mapEnrichedToGFF(mm1s_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+    #for p4936
+    dataDict = pipeline_dfci.loadDataTable(p4936_young_dataFile)
+    setName = 'P493-6_TSS_H3K27AC'
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['P493-6']
+    namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
+    pipeline_dfci.mapEnrichedToGFF(p4936_young_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+    #for sclc
+    dataDict = pipeline_dfci.loadDataTable(sclc_dataFile)
+    setName = 'SCLC_TSS_H3K27AC'
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['H128','H2171']
+    namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
+    pipeline_dfci.mapEnrichedToGFF(sclc_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+    #for shep on
+    dataDict = pipeline_dfci.loadDataTable(shep_on_dataFile)
+    setName = 'SHEP_ON_TSS_H3K27AC'
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['SHEP']
+    namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
+    pipeline_dfci.mapEnrichedToGFF(shep_on_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+
+    #====================
+    #now create the gene lists
+    #this is for MM1S
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_MM1S_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['MM1S_H3K27AC_DMSO']]
+    output = '%sgeneListFolder/HG19_MM1S_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
+    #this is for P493-6
+    #here we will take the union of all datasets
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_P493-6_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['P493-6_T0_H3K27AC'],['P493-6_T1_H3K27AC'],['P493-6_T24_H3K27AC']]
+    output = '%sgeneListFolder/HG19_P493-6_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
+    #this is for SCLC
+    #here we will take the union of all datasets
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_SCLC_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['H128_H3K27AC'],['H2171_H3K27AC']]
+    output = '%sgeneListFolder/HG19_SCLC_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
+    #this is for SHEP ON
+    #here we will take the union of all datasets
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_SHEP_ON_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['SHEP_0HR_H3K27AC'],['SHEP_2HR_H3K27AC'],['SHEP_6HR_H3K27AC']]
+    output = '%sgeneListFolder/HG19_SCLC_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~DEFINING NB H3K27AC ENHANCER LANDSCAPE~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def define_enhancer_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile):
@@ -275,8 +482,9 @@ def define_enhancer_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile):
     bashFile.write(metaRoseCmd + '\n')
     bashFile.close()
 
-    #this is the expeceted region map output
-    region_map_path = '%s%s/%s_0KB_STITCHED_ENHANCER_REGION_MAP.txt' % (roseFolder,analysisName,analysisName)
+
+    #the 4KB parameter is 
+    region_map_path = '%s%s/%s_AllEnhancers.table.txt' % (roseFolder,analysisName,analysisName)
     return bashFileName,region_map_path,namesList
 
 
@@ -329,28 +537,272 @@ def define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile):
 
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~RANKING MYCN PEAKS BY STRENGTH~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~MAKING NB CONSERVED MYCN REGION GFFS AND BEDS~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-#this is adapted from the lin 2012 code, but uses actual binding strength as
-#opposed to enrichment to quantify peaks
-
-def rank_eboxes(data_file,signal_path,names_list,macsFolder,genomeDirectory):
+def make_mycn_regions(conserved_rank_path):
 
     '''
-    uses the repeat filtered conserved MYCN sites and ranks eboxes within them
-    by average background subtracted signal
+    takes conserved NB MYCN regions 
+    then creates a bed and gff of regions
     '''
 
-    print('ok')
+    conserved_rank_table = utils.parseTable(conserved_rank_path,'\t')
+    mycn_gff = []
+    mycn_flank_gff = []
+    mycn_bed = []
+    mycn_flank_bed = []
+
+    for line in conserved_rank_table[1:]:
+        locus_line = utils.Locus(line[1],line[2],line[3],'.')
+        
+        if int(line[3]) < int(line[2]):
+            print('uh oh')
+            print(line)
+        gff_line = [line[1],line[0],'',line[2],line[3],'','.','',line[0]]
+        bed_line = [line[1],line[2],line[3],line[0]]
+        mycn_gff.append(gff_line)
+        mycn_bed.append(bed_line)
+
+        gff_flank_line = [line[1],line[0],'',int(line[2])-500,int(line[3])+500,'','.','',line[0]]
+        bed_flank_line = [line[1],int(line[2])-500,int(line[3])+500,line[0]]
+        mycn_flank_gff.append(gff_flank_line)
+        mycn_flank_bed.append(bed_flank_line)
+        
+    mycn_gff_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+    mycn_flank_gff_path = '%sHG19_NB_MYCN_CONSERVED_-500_+500.gff' % (gffFolder)
+
+    mycn_bed_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.bed' % (bedFolder)
+    mycn_flank_bed_path = '%sHG19_NB_MYCN_CONSERVED_-500_+500.bed' % (bedFolder)
+
+    #writing to disk
+    utils.unParseTable(mycn_gff,mycn_gff_path,'\t')
+    utils.unParseTable(mycn_flank_gff,mycn_flank_gff_path,'\t')
+
+    utils.unParseTable(mycn_bed,mycn_bed_path,'\t')
+    utils.unParseTable(mycn_flank_bed,mycn_flank_bed_path,'\t')
+
+    print(mycn_gff_path)
+    print(mycn_flank_gff_path)
+    print(mycn_bed_path)
+    print(mycn_flank_bed_path)
+    return mycn_gff_path,mycn_flank_gff_path
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~MAPPING MYCN AND H3K27AC TO MYCN REGIONS~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def map_mycn_regions(nb_all_chip_dataFile,gffList):
+
+    '''
+    making a normalized MYCN and H3K27AC binding signal table at all regions
+    '''
+
+    #since each bam has different read lengths, important to carefully normalize quantification
+    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+
+    names_list = dataDict.keys()
+    names_list.sort()
+    
+    for name in names_list:
+        bam = utils.Bam(dataDict[name]['bam'])
+        read_length = bam.getReadLengths()[0]
+        bam_extension = 200-read_length
+        print('For dataset %s using an extension of %s' % (name,bam_extension))
+        pipeline_dfci.mapBamsBatch(nb_all_chip_dataFile,gffList,mappedFolder,overWrite =False,namesList = [name],extension=bam_extension,rpm=True)
+
+        
+
+    #want a signal table of all datasets to each gff
+    print('Writing signal tables for each gff:')
+    for gffFile in gffList:
+        gffName = gffFile.split('/')[-1].split('.')[0]
+        signal_table_path = '%s%s_SIGNAL.txt' % (signalFolder,gffName)
+        print(signal_table_path)
+        pipeline_dfci.makeSignalTable(nb_all_chip_dataFile,gffFile,mappedFolder,namesList = names_list,medianNorm=False,output =signal_table_path)
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~MAKING NB MYCN STATS TABLE~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+
+
+def make_mycn_stats_table(nb_all_chip_dataFile,outFile):
+
+    '''
+    making a table of conserved mycn peaks w/ some additional stats
+    mycn and h3k27ac signal is avg. background normalized across 4 samples
+    active tss defined as the union of all H3K27ac occupied promoters in NB
+    active enhancers defined as the union of all H3K27ac sites outside of promoters
+    '''
+    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+
+    print('SETTING UP OUTPUT TABLE')
+    outTable = [['PEAK_ID','CHROM','START','STOP','LENGTH','ACTIVE_TSS_OVERLAP','ENHANCER_OVERLAP','CPG_ISLAND_OVERLAP','CPG_ISLAND_FRACTION','GC_FREQ','MYCN_RANK','AVG_MYCN_SIGNAL','AVG_H3K27AC_SIGNAL','CANON_EBOX_COUNT','NONCANON_EBOX_COUNT','TOTAL_EBOX_COUNT']]
+
+
+
+    #input files
+    mycnSignalFile = '%sHG19_NB_MYCN_CONSERVED_-0_+0_SIGNAL.txt' % (signalFolder)
+    h3k27acSignalFile = '%sHG19_NB_MYCN_CONSERVED_-500_+500_SIGNAL.txt' % (signalFolder)
+    mycnRankFile = '%smeta_rose/NB_MYCN/NB_MYCN_0KB_STITCHED_ENHANCER_REGION_RANK_CONSERVED.txt' % (projectFolder)
+    activeGeneFile = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
+    #note, this is the ucsc hg19 cpg islands extended file
+    #to download and format run ./beds/download_cpg.sh
+    cpgFile = '%sbeds/hg19_cpg_islands.bed' % (projectFolder)
+    enhancerFile = '%smeta_rose/NB_H3K27AC/NB_H3K27AC_AllEnhancers.table.txt' % (projectFolder)
+
+    print('LOADING MYCN BINDING DATA')
+    mycnSignalTable = utils.parseTable(mycnSignalFile,'\t')
+
+    #making a signal dictionary for MYCN binding
+    names_list = ['BE2C_MYCN','KELLY_MYCN','NGP_MYCN','SHEP21_0HR_MYCN_NOSPIKE']
+    background_list = [dataDict[name]['background'] for name in names_list]
+    header = mycnSignalTable[0]
+    chip_columns = [header.index(name) for name in names_list]
+    background_columns = [header.index(background_name) for background_name in background_list]
+    
+    mycn_sig_dict = {}
+    #this only works if the first column are unique identifiers
+    if len(mycnSignalTable) != len(utils.uniquify([line[0] for line in mycnSignalTable])):
+        print('Error: Column 1 of must contain unique identifiers.' % (mycnSignalFile))
+        sys.exit()
+    for line in mycnSignalTable[1:]:
+        line_sig = []
+        for i in range(len(names_list)):
+            line_sig.append(float(line[chip_columns[i]]) - float(line[background_columns[i]]))
+        mycn_sig_dict[line[0]] = numpy.mean(line_sig)
+
+
+    
+    print('LOADING MYCN RANK DATA')
+    mycnRankTable = utils.parseTable(mycnRankFile,'\t')
+
+    print('LOADING H3K27AC BINDING DATA')
+    h3k27acSignalTable = utils.parseTable(h3k27acSignalFile,'\t')
+    #making a signal dictionary for background subtracted H3K27ac binding
+    names_list = ['BE2C_H3K27AC','KELLY_H3K27AC','NGP_H3K27AC','SHEP21_0HR_H3K27AC_NOSPIKE']
+    background_list = [dataDict[name]['background'] for name in names_list]
+    header = h3k27acSignalTable[0]
+    chip_columns = [header.index(name) for name in names_list]
+    background_columns = [header.index(background_name) for background_name in background_list]
+    
+    h3k27ac_sig_dict = {}
+    #this only works if the first column are unique identifiers
+    if len(h3k27acSignalTable) != len(utils.uniquify([line[0] for line in h3k27acSignalTable])):
+        print('Error: Column 1 of must contain unique identifiers.' % (h3k27acSignalFile))
+        sys.exit()
+    for line in h3k27acSignalTable[1:]:
+        line_sig = []
+        for i in range(len(names_list)):
+            line_sig.append(float(line[chip_columns[i]]) - float(line[background_columns[i]]))
+        h3k27ac_sig_dict[line[0]] = numpy.mean(line_sig)
+
+
+
+    #making the cpg collection
+    print('LOADING CPGS ISLANDS')
+    cpgBed = utils.parseTable(cpgFile,'\t')
+    cpgLoci = []
+    for line in cpgBed:
+        cpgLoci.append(utils.Locus(line[0],line[1],line[2],'.',line[-1]))
+    cpgCollection = utils.LocusCollection(cpgLoci,50)
+        
+    #next make the tss collection of active promoters
+    print('LOADING ACTIVE PROMOTERS')
+    startDict = utils.makeStartDict(annotFile)
+    activeTable = utils.parseTable(activeGeneFile,'\t')
+    tss_1kb_loci = []
+    for line in activeTable:
+        tss_1kb_loci.append(utils.makeTSSLocus(line[1],startDict,1000,1000))
+    tss_1kb_collection = utils.LocusCollection(tss_1kb_loci,50)
+
+
+    #enhancer file
+    print("LOADING ACTIVE ENHANCERS")
+    enhancerTable = utils.parseTable(enhancerFile,'\t')
+    print('STARTING WITH THE FOLLOWING NUMBER OF ENHANCERS IN NB')
+    print(len(enhancerTable) - 6)
+    enhancerLoci = []
+    for line in enhancerTable:
+        if line[0][0] != '#' and line[0][0] != 'R':
+            try:
+                lineLocus = utils.Locus(line[1],int(line[2]),int(line[3]),'.',line[0])
+                enhancerLoci.append(lineLocus)
+            except IndexError:
+                print(line)
+                sys.exit()
+    enhancerCollection = utils.LocusCollection(enhancerLoci,50)
+
+    print('CLASSIFYING MYCN PEAKS')
+    ticker = 0
+    for i in range(1,len(mycnSignalTable)):
+        if ticker%100 == 0:
+            print(ticker)
+        ticker +=1
+
+        line = mycnSignalTable[i]        
+
+        mycn_signal = round(mycn_sig_dict[line[0]],4)
+        h3k27ac_signal = round(h3k27ac_sig_dict[line[0]],4)
+        
+        peakID = line[0]
+        locusString = line[1]
+        chrom = locusString.split('(')[0]
+        [start,stop] = [int(x) for x in line[1].split(':')[-1].split('-')]
+        lineLocus = utils.Locus(chrom,start,stop,'.',peakID)
+        
+        tssOverlap = 0
+        if tss_1kb_collection.getOverlap(lineLocus,'both'):
+            tssOverlap = 1
+
+        enhancerOverlap = 0
+        if enhancerCollection.getOverlap(lineLocus,'both') and tssOverlap == 0:
+            enhancerOverlap = 1
+
+        cpgIslandOverlap = 0
+        if cpgCollection.getOverlap(lineLocus,'both'):
+            cpgIslandOverlap = 1
+
+        #now do fractional cpgOverlap
+        overlappingCpGLoci = cpgCollection.getOverlap(lineLocus,'both')
+        overlappingBases = 0
+        for locus in overlappingCpGLoci:
+            cpgStart = max(locus.start(),lineLocus.start())
+            cpgEnd = min(locus.end(),lineLocus.end())
+            overlappingBases += (cpgEnd-cpgStart)
+        overlapFraction = round(float(overlappingBases)/lineLocus.len(),2)
+        
+        #now get the seq
+        lineSeq = string.upper(utils.fetchSeq(genomeDirectory,chrom,start,stop,True))
+        gcFreq = round(float(lineSeq.count('GC') + lineSeq.count('CG'))/len(lineSeq),2)
+            
+        mycnRankLine = mycnRankTable[i]
+        mycnRank = numpy.mean([float(x) for x in mycnRankLine[6:]])
+
+        canonMatchList = re.findall('CACGTG',lineSeq)
+        canon_count = len(canonMatchList)
+
+        eboxMatchList = re.findall('CA..TG',lineSeq)
+        ebox_count = len(eboxMatchList)
+
+        non_canon_count = ebox_count-canon_count
+
+        newLine = [peakID,chrom,start,stop,lineLocus.len(),tssOverlap,enhancerOverlap,cpgIslandOverlap,overlapFraction,gcFreq,mycnRank,mycn_signal,h3k27ac_signal,canon_count,non_canon_count,ebox_count]
+        outTable.append(newLine)
+
+    utils.unParseTable(outTable,outFile,'\t')
+    
+    return outFile
+
+
+
+#for the chiprx code
 def filterPeaks(tabixFolder,mycTablePath,outputPath,repeatList = []):
 
     '''                                                                                             
@@ -407,224 +859,127 @@ def filterPeaks(tabixFolder,mycTablePath,outputPath,repeatList = []):
 
     utils.unParseTable(repeatTable,outputPath,'\t')
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~RANKING MYCN PEAKS BY STRENGTH~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def makeMycnPeakTable():
+
+#this is adapted from the lin 2012 code, but uses actual binding strength as
+#opposed to enrichment to quantify peaks
+
+def rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,window = 100):
 
     '''
-    making a table of repeat filtered mycn peaks w/ some additional stats
-    mycn and h3k27ac signal is avg. background normalized across 4 samples
-    active tss defined as the union of all H3K27ac occupied promoters in NB
-    active enhancers defined as the union of all H3K27ac sites outside of promoters
-    repeat cutoffs defined as cumulative fraction > 0.2 of LINE,SIMPLE,LTR
-    also produces a bed and gff
+    uses the  conserved MYCN sites and ranks eboxes within them
+    by average background subtracted signal
+    searches 100bp from mycn summits
     '''
+    #bring in the conserved mycn region
+    print('making gff of nb mycn summits')
+    nb_mycn_gff = utils.parseTable(mycn_gff_path,'\t')
 
-    print('SETTING UP OUTPUT TABLE')
-    outTable = [['PEAK_ID','CHROM','START','STOP','LENGTH','ACTIVE_TSS_OVERLAP','ENHANCER_OVERLAP','CPG_ISLAND_OVERLAP','CPG_ISLAND_FRACTION','GC_FREQ','MYCN_RANK','AVG_MYCN_SIGNAL','AVG_H3K27AC_SIGNAL','CANON_EBOX_COUNT','NONCANON_EBOX_COUNT','TOTAL_EBOX_COUNT']]
+    nb_mycn_collection = utils.gffToLocusCollection(nb_mycn_gff,50)
 
+    dataDict =pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+    names_list = [name for name in dataDict.keys() if name.count('MYCN') == 1]
+    names_list.sort()
 
+    summit_loci = []
+    #first makes a gff of all summits +/- 100bp for all nb mycn datasets
+    for name in names_list:
+        summit_bed_path = '%s%s/%s_summits.bed' % (macsFolder,name,name)
+        summit_bed = utils.parseTable(summit_bed_path,'\t')
+        for line in summit_bed:
+            summit_locus = utils.Locus(line[0],int(line[1])-100,int(line[2])+100,'.',line[3])
+            if len(nb_mycn_collection.getOverlap(summit_locus)) > 0:
+                summit_loci.append(summit_locus)
 
-    #setting up the output
-    outFile = '%stables/HG19_NB_MYCN_CONSERVED_EBOX_TABLE.txt' % (projectFolder)
-
-    #input files
-    maskFile = '/raider/index/hg19/Masks/hg19_encode_blacklist.bed'
-    mycnSignalFile = '%ssignalTables/HG19_NB_MYCN_CONSERVED_-0_+0_SIGNAL_TABLE.txt' % (projectFolder)
-    h3k27acSignalFile = '%ssignalTables/HG19_NB_MYCN_CONSERVED_-0_+0_H3K27AC_SIGNAL_TABLE.txt' % (projectFolder)
-    mycnRankFile = '%smeta_rose/NB_MYCN/NB_MYCN_0KB_STITCHED_ENHANCER_REGION_RANK_CONSERVED.txt' % (projectFolder)
-    activeGeneFile = '/grail/projects/mycn_cyl/gffListFiles/HG19_NB_H3K27AC_TRANSCRIBED_UNION.txt'
-    cpgFile = '%sbeds/cpg_islands.bed' % (projectFolder)
-    enhancerFile = '%smeta_rose/NB_H3K27AC/NB_H3K27AC_AllEnhancers.table.txt' % (projectFolder)
-
-    print('LOADING MASK')
-    maskTable = utils.parseTable(maskFile,'\t')
-    maskLoci = []
-    for line in maskTable:
-        lineLocus = utils.Locus(line[0],line[1],line[2],'.')
-        maskLoci.append(lineLocus)
-    maskCollection = utils.LocusCollection(maskLoci,50)
-
-    print('LOADING MYCN BINDING DATA')
-    mycnSignalTable = utils.parseTable(mycnSignalFile,'\t')
-    print(len(mycnSignalTable))
-
-    print('LOADING MYCN RANK DATA')
-    mycnRankTable = utils.parseTable(mycnRankFile,'\t')
-
-    print('LOADING H3K27AC BINDING DATA')
-    h3k27acSignalTable = utils.parseTable(h3k27acSignalFile,'\t')
-
-
-    #making the cpg collection
-    print('LOADING CPGS ISLANDS')
-    cpgBed = utils.parseTable(cpgFile,'\t')
-    cpgLoci = []
-    for line in cpgBed:
-        cpgLoci.append(utils.Locus(line[0],line[1],line[2],'.',line[-1]))
-    cpgCollection = utils.LocusCollection(cpgLoci,50)
-        
-    #next make the tss collection of active promoters
-    print('LOADING ACTIVE PROMOTERS')
-    startDict = utils.makeStartDict(annotFile)
-    activeTable = utils.parseTable(activeGeneFile,'\t')
-    tss_1kb_loci = []
-    tss_50kb_loci = []
-    for line in activeTable:
-        tss_1kb_loci.append(utils.makeTSSLocus(line[1],startDict,1000,1000))
-        tss_50kb_loci.append(utils.makeTSSLocus(line[1],startDict,50000,50000))
-
-    tss_1kb_collection = utils.LocusCollection(tss_1kb_loci,50)
-    tss_50kb_collection = utils.LocusCollection(tss_50kb_loci,50)
-
-    #enhancer file
-    print("LOADING ACTIVE ENHANCERS")
-    enhancerTable = utils.parseTable(enhancerFile,'\t')
-    print('STARTING WITH THE FOLLOWING NUMBER OF ENHANCERS IN NB')
-    print(len(enhancerTable) - 6)
-    enhancerLoci = []
-    for line in enhancerTable:
-        if line[0][0] != '#' and line[0][0] != 'R':
-            try:
-                lineLocus = utils.Locus(line[1],int(line[2]),int(line[3]),'.',line[0])
-            except IndexError:
-                print(line)
-                sys.exit()
-            if not tss_1kb_collection.getOverlap(lineLocus):
-                enhancerLoci.append(lineLocus)
-    enhancerCollection = utils.LocusCollection(enhancerLoci,50)
-    print("AFTER FILTERING THESE MANY ARE LEFT")
-    print(len(enhancerCollection))
-
-
-    print('CLASSIFYING MYCN PEAKS')
-    ticker = 0
-    for i in range(1,len(mycnSignalTable)):
-        if ticker%100 == 0:
-            print(ticker)
-        ticker +=1
-
-        line = mycnSignalTable[i]        
-
-        signalVector = [float(x) for x in line[2:]]
-        
-
-        peakID = line[0]
-        locusString = line[1]
-        chrom = locusString.split('(')[0]
-        [start,stop] = [int(x) for x in line[1].split(':')[-1].split('-')]
-        lineLocus = utils.Locus(chrom,start,stop,'.',peakID)
-
-        if maskCollection.getOverlap(lineLocus,'both'):
-            continue
-        newLine = [peakID,chrom,start,stop,lineLocus.len()]
-
-        if tss_1kb_collection.getOverlap(lineLocus,'both'):
-            newLine.append(1)
-        else:
-            newLine.append(0)
-
-        #find distance to nearest gene with 1mb
-        tssSearchLocus = utils.makeSearchLocus(lineLocus,999000,999000)
-        overlappingPromoters = tss_1kb_collection.getOverlap(tssSearchLocus,'both')
-        if len(overlappingPromoters) == 0:
-            tssDistance = 1000000
-        else:
-            tssStartsList = [(locus.start() + locus.end())/2 for locus in overlappingPromoters]
-            tssDistanceList = [abs((lineLocus.start()+lineLocus.end())/2 - tssStart) for tssStart in tssStartsList]
-            tssDistance = min(tssDistanceList)
-        newLine.append(tssDistance)
-
-
-        if enhancerCollection.getOverlap(lineLocus,'both'):
-            newLine.append(1)
-        else:
-            newLine.append(0)
-
-        if twistCollection.getOverlap(lineLocus,'both'):
-            newLine.append(1)
-        else:
-            newLine.append(0)
-        
-        if cpgCollection.getOverlap(lineLocus,'both'):
-            newLine.append(1)
-        else:
-            newLine.append(0)
-
-        #now do fractional cpgOverlap
-        overlappingCpGLoci = cpgCollection.getOverlap(lineLocus,'both')
-        overlappingBases = 0
-        for locus in overlappingCpGLoci:
-            cpgStart = max(locus.start(),lineLocus.start())
-            cpgEnd = min(locus.end(),lineLocus.end())
-            overlappingBases += (cpgEnd-cpgStart)
-        overlapFraction = float(overlappingBases)/lineLocus.len()
-        
-        newLine.append(round(overlapFraction,2))
-
-        #now get the seq
-        lineSeq = string.upper(utils.fetchSeq(genomeDirectory,chrom,start,stop,True))
-        
-        gcFreq = float(lineSeq.count('GC') + lineSeq.count('CG'))/len(lineSeq)
-        newLine.append(gcFreq)
-            
-        mycnRankLine = mycnRankTable[i]
-        mycnRank = numpy.mean([float(x) for x in mycnRankLine[6:]])
-        newLine.append(mycnRank)
-
-        h3k27acLine = h3k27acSignalTable[i]
-        h3k27acSignal = numpy.mean([float(x) for x in h3k27acLine[2:]])
-        newLine.append(h3k27acSignal)
-
-
-        #this is where we add the mycn signal
-        newLine += signalVector
-
-
-        eboxMatchList = re.findall('CA..TG',lineSeq)
-        if len(eboxMatchList) == 0:
-            newLine += [0]*12
-        else:
-            #first fix the eboxes
-            for j in range(len(eboxMatchList)):
-                ebox = eboxMatchList[j]
-                if eboxList.count(ebox) == 0:
-                    eboxMatchList[j] = utils.revComp(ebox)
-
-            #now count for each ebox
-            eboxCountVector = []
-            for ebox in eboxList:
-                eboxCountVector.append(eboxMatchList.count(ebox))
-            
-            newLine += eboxCountVector
-
-            #now add the total number of eboxes
-            newLine.append(len(eboxMatchList))
-
-            #now get the cumulative score
-            eboxScore = 0.0
-            for ebox in eboxMatchList:
-                eboxScore += eboxDict[ebox]
-
-            newLine.append(eboxScore)
-
-        #now find the overlapping and proximal genes
-        overlappingGenes = [startDict[locus.ID()]['name'] for locus in tss_1kb_collection.getOverlap(lineLocus,'both')]
-        overlappingGenes = utils.updfniquify(overlappingGenes)
- 
-        proximalGenes = [startDict[locus.ID()]['name'] for locus in tss_50kb_collection.getOverlap(lineLocus,'both')]
-        proximalGenes = [gene for gene in proximalGenes if overlappingGenes.count(gene) == 0]
-        proximalGenes = utils.uniquify(proximalGenes)
-
-
-        overlappingString = string.join(overlappingGenes,',')
-        proximalString = string.join(proximalGenes,',')
-        
-        newLine += [overlappingString,proximalString]
-
-        outTable.append(newLine)
-
-    utils.unParseTable(outTable,outFile,'\t')
+    summit_collection =utils.LocusCollection(summit_loci,50)
+    summit_merged_collection = summit_collection.stitchCollection()
     
+    summit_gff = utils.locusCollectionToGFF(summit_merged_collection)
+    summit_gff_path = '%sHG19_NB_MYCN_SUMMITS_-100_+100.gff' % (gffFolder)
+    utils.unParseTable(summit_gff,summit_gff_path,'\t')
+
+    #this is borrowed from above and maps chip-seq signal to the gff
+    print('mapping to nb mycn summits and making signal dict')
+    gffList = [summit_gff_path]
+    #map_mycn_regions(nb_all_chip_dataFile,gffList)
+
+    summit_signal_path = '%sHG19_NB_MYCN_SUMMITS_-100_+100_SIGNAL.txt' % (signalFolder)
+
+
+    mycnSignalTable = utils.parseTable(summit_signal_path,'\t')
+
+    #making a signal dictionary for MYCN binding
+    names_list = ['BE2C_MYCN','KELLY_MYCN','NGP_MYCN','SHEP21_0HR_MYCN_NOSPIKE']
+    background_list = [dataDict[name]['background'] for name in names_list]
+    header = mycnSignalTable[0]
+    chip_columns = [header.index(name) for name in names_list]
+    background_columns = [header.index(background_name) for background_name in background_list]
+    
+    mycn_sig_dict = {}
+    for line in mycnSignalTable[1:]:
+        line_sig = []
+        for i in range(len(names_list)):
+            line_sig.append(float(line[chip_columns[i]]) - float(line[background_columns[i]]))
+        region_id = line[1]
+        coords = [int(x) for x in line[1].split(':')[-1].split('-')]
+        line_length = coords[1]-coords[0]
+        mycn_sig_dict[region_id] = numpy.mean(line_sig)*line_length
+
+    #now for each region find the eboxes and then add up the signal
+    print('making ebox ranking')
+    ebox_list = ['CACGTG','CAGTTG','CAAGTG','CAGGTG','CAATTG','CAAATG','CATCTG','CAGCTG','CATGTG','CATATG']
+    eboxDict = {}
+    for ebox in ebox_list:
+        eboxDict[ebox] = []
+    ticker = 0
+    for line in summit_gff:
+        if ticker % 1000 == 0:
+            print(ticker)
+        ticker+=1
+
+        chrom = line[0]
+        sense = '.'
+
+        start = int(line[3])
+        end = int(line[4])
+        region_id = '%s(%s):%s-%s' % (line[0],line[6],line[3],line[4])
+        signal = mycn_sig_dict[region_id]
+
+        sequenceLine = utils.fetchSeq(genomeDirectory,chrom,start,end,True)
+        
+        motifVector = []
+        matches = re.finditer('CA..TG',str.upper(sequenceLine))
+        if matches:
+            for match in matches:
+                motifVector.append(match.group())
+        
+        #count only 1 of each motif type per line
+        #motifVector = utils.uniquify(motifVector)
+        for motif in motifVector:
+            if ebox_list.count(motif) > 0:
+                eboxDict[motif].append(signal)
+            else:
+                eboxDict[utils.revComp(motif)].append(signal)
+
+
+    eboxTable =[]
+    eboxTableOrdered =[['EBOX','OCCURENCES','AVG_HEIGHT']]
+    for ebox in eboxDict.keys():
+        newLine = [ebox,len(eboxDict[ebox]),numpy.mean(eboxDict[ebox])]
+        eboxTable.append(newLine)
+
+
+    occurenceOrder = utils.order([line[2] for line in eboxTable],decreasing=True)
+    
+    for x in occurenceOrder:
+        eboxTableOrdered.append(eboxTable[x])
+    print(eboxTableOrdered)
+    ebox_outfile = '%sHG19_NB_MYCN_CONSERVED_SUMMITS_-100_+100_EBOX_RANK.txt' % (tableFolder)
+    utils.unParseTable(eboxTableOrdered,ebox_outfile,'\t')
+
 
 
 
