@@ -167,44 +167,42 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    # #running peak finding using macs 1.4.2 on all chip datasets
-    # #this usually takes ~2-3 hours on a reasonably fast machine
-    # #a 3 hour time out on this entire operation is set
-    # #if peak calling takes longer than 3 hours, simply run the script again after completion
+    #running peak finding using macs 1.4.2 on all chip datasets
+    #this usually takes ~2-3 hours on a reasonably fast machine
+    #a 3 hour time out on this entire operation is set
+    #if peak calling takes longer than 3 hours, simply run the script again after completion
 
-    # for dataFile in chip_data_list:
-    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
-    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-    #     namesList.sort()
-    #     print(namesList)
-    #     #for name in namesList:
-    #     #    print(dataDict[name]['bam'])
-    #     pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
-    #     os.chdir(projectFolder) # the silly call macs script has to change into the output dir
-    #     #so this takes us back to the project folder
+    for dataFile in chip_data_list:
+        dataDict = pipeline_dfci.loadDataTable(dataFile)
+        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+        namesList.sort()
+        print(namesList)
+        pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
+        os.chdir(projectFolder) # the silly call macs script has to change into the output dir
+        #so this takes us back to the project folder
 
     
-    # #to check for completeness, we will try to find all of the peak files
-    # peak_calling_done = False
-    # while not peak_calling_done:
-    #     for dataFile in chip_data_list:
-    #         dataDict = pipeline_dfci.loadDataTable(dataFile)
-    #         namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-    #         for name in namesList:
-    #             peak_path = '%s%s%s/%s_peaks.bed' % (projectFolder,macsFolder,name,name)
-    #             if utils.checkOutput(peak_path,1,180):
-    #                 continue
-    #                 peak_calling_done =True
-    #             else:
-    #                 print('Error: peak calling timed out')
-    #                 sys.exit()
+    #to check for completeness, we will try to find all of the peak files
+    peak_calling_done = False
+    while not peak_calling_done:
+        for dataFile in chip_data_list:
+            dataDict = pipeline_dfci.loadDataTable(dataFile)
+            namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+            for name in namesList:
+                peak_path = '%s%s%s/%s_peaks.bed' % (projectFolder,macsFolder,name,name)
+                if utils.checkOutput(peak_path,1,180):
+                    continue
+                    peak_calling_done =True
+                else:
+                    print('Error: peak calling timed out')
+                    sys.exit()
         
                     
-    # #now format the macs output
-    # for dataFile in chip_data_list:
-    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
-    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-    #     pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
+    #now format the macs output
+    for dataFile in chip_data_list:
+        dataDict = pipeline_dfci.loadDataTable(dataFile)
+        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+        pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
         
     
         
@@ -225,8 +223,8 @@ def main():
     #here we will identify active promoters in various contexts as those with 
     #an H3K27AC peak in the +/- 1kb tss region
     #UCSC refseq annotations are used for all genes
-    #make_nb_active_gene_lists(nb_all_chip_dataFile)
-    #make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile)
+    make_nb_active_gene_lists(nb_all_chip_dataFile)
+    make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile)
 
 
     print('\n\n')
@@ -276,11 +274,11 @@ def main():
     #and then map MYCN and H3K27ac signal 
 
     print('Making a gff and bed of conserved NB MYCN regions:')
-    #mycn_gff_path,mycn_flank_gff_path = make_mycn_regions(conserved_rank_path) 
+    mycn_gff_path,mycn_flank_gff_path = make_mycn_regions(conserved_rank_path) 
     
     print('Mapping MYCN and H3K27AC signal')
-    #gffList = [mycn_gff_path,mycn_flank_gff_path]
-    #map_mycn_regions(nb_all_chip_dataFile,gffList)
+    gffList = [mycn_gff_path,mycn_flank_gff_path]
+    map_mycn_regions(nb_all_chip_dataFile,gffList)
 
     print('\n\n')
     print('#======================================================================')
@@ -302,10 +300,10 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    # compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
-    # r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
-    # print(r_cmd)
-    # os.system(r_cmd)
+    compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
+    r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
+    print(r_cmd)
+    os.system(r_cmd)
 
 
     print('\n\n')
@@ -315,8 +313,16 @@ def main():
     print('\n\n')
 
     mycn_gff_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+    ebox_rank_path = rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,window = 100)
+    
+    print(ebox_rank_path)
 
-    rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,window = 100)
+    #now make the heatmap
+    ebox_heatmap_script_path = '%sr_scripts/3_nb_ebox_heatmap.R' % (projectFolder)
+    r_cmd = 'Rscript %s %s %s' % (ebox_heatmap_script_path,ebox_rank_path,projectFolder)
+    print(r_cmd)
+    os.system(r_cmd)
+    
 
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
@@ -872,8 +878,11 @@ def rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,wi
     '''
     uses the  conserved MYCN sites and ranks eboxes within them
     by average background subtracted signal
-    searches 100bp from mycn summits
+    searches 100bp (window variable)  from mycn summits
     '''
+    
+    window = int(window)
+
     #bring in the conserved mycn region
     print('making gff of nb mycn summits')
     nb_mycn_gff = utils.parseTable(mycn_gff_path,'\t')
@@ -890,7 +899,7 @@ def rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,wi
         summit_bed_path = '%s%s/%s_summits.bed' % (macsFolder,name,name)
         summit_bed = utils.parseTable(summit_bed_path,'\t')
         for line in summit_bed:
-            summit_locus = utils.Locus(line[0],int(line[1])-100,int(line[2])+100,'.',line[3])
+            summit_locus = utils.Locus(line[0],int(line[1])-window,int(line[2])+window,'.',line[3])
             if len(nb_mycn_collection.getOverlap(summit_locus)) > 0:
                 summit_loci.append(summit_locus)
 
@@ -898,15 +907,15 @@ def rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,wi
     summit_merged_collection = summit_collection.stitchCollection()
     
     summit_gff = utils.locusCollectionToGFF(summit_merged_collection)
-    summit_gff_path = '%sHG19_NB_MYCN_SUMMITS_-100_+100.gff' % (gffFolder)
+    summit_gff_path = '%sHG19_NB_MYCN_SUMMITS_-%s_+%s.gff' % (gffFolder,window,window)
     utils.unParseTable(summit_gff,summit_gff_path,'\t')
 
     #this is borrowed from above and maps chip-seq signal to the gff
     print('mapping to nb mycn summits and making signal dict')
     gffList = [summit_gff_path]
-    #map_mycn_regions(nb_all_chip_dataFile,gffList)
+    map_mycn_regions(nb_all_chip_dataFile,gffList)
 
-    summit_signal_path = '%sHG19_NB_MYCN_SUMMITS_-100_+100_SIGNAL.txt' % (signalFolder)
+    summit_signal_path = '%sHG19_NB_MYCN_SUMMITS_-%s_+%s_SIGNAL.txt' % (signalFolder,window,window)
 
 
     mycnSignalTable = utils.parseTable(summit_signal_path,'\t')
@@ -977,8 +986,9 @@ def rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,wi
     for x in occurenceOrder:
         eboxTableOrdered.append(eboxTable[x])
     print(eboxTableOrdered)
-    ebox_outfile = '%sHG19_NB_MYCN_CONSERVED_SUMMITS_-100_+100_EBOX_RANK.txt' % (tableFolder)
+    ebox_outfile = '%sHG19_NB_MYCN_CONSERVED_SUMMITS_-%s_+%s_EBOX_RANK.txt' % (tableFolder,window,window)
     utils.unParseTable(eboxTableOrdered,ebox_outfile,'\t')
+    return ebox_outfile
 
 
 
