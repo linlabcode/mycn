@@ -199,14 +199,26 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    # #for SHEP21 on
-    # mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
-    # for mycn_name in mycn_list:
-    #     input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
-    #     activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
-    #     analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_%s' % (mycn_name)
-    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
-    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
+    #for SHEP21 on
+    mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    for mycn_name in mycn_list:
+        input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
+        activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+        analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_%s' % (mycn_name)
+        nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
+        os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+    #for SHEP21 on @ NB conserved regions
+    mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    for mycn_name in mycn_list:
+        input_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+        activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+        analysis_name = 'NB_MYCN_CONSERVED_%s' % (mycn_name)
+        nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
+        os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+
+
 
 
 
@@ -233,36 +245,36 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #for p493-6, mm1s, h2171, and h128
+    # #for p493-6, mm1s, h2171, and h128
 
-    #for p493-6
-    myc_list = ['P493-6_T0_MYC','P493-6_T1_MYC','P493-6_T24_MYC']
-    for myc_name in myc_list:
-        input_path = '%sP493-6_T24_MYC_peaks.bed' % (macsEnrichedFolder)
-        activity_path = '%sHG19_P493-6_T24_H3K27AC_ACTIVE.txt' % (geneListFolder)
-        analysis_name = 'P493-6_T24_MYC_REGIONS_%s' % (myc_name)
-        enhancer_promoter_bash = wrap_enhancer_promoter(p4936_young_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
-        os.system('bash %s' % (enhancer_promoter_bash))
-
-
-    #for sclc
-    myc_list = ['H128_MYC','H2171_MYC']
-    for myc_name in myc_list:
-        input_path = '%sH2171_MYC_peaks.bed' % (macsEnrichedFolder)
-        activity_path = '%sHG19_H2171_H3K27AC_ACTIVE.txt' % (geneListFolder)
-        analysis_name = 'H2171_MYC_REGIONS_%s' % (myc_name)
-        enhancer_promoter_bash = wrap_enhancer_promoter(sclc_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
-        os.system('bash %s' % (enhancer_promoter_bash))
+    # #for p493-6
+    # myc_list = ['P493-6_T0_MYC','P493-6_T1_MYC','P493-6_T24_MYC']
+    # for myc_name in myc_list:
+    #     input_path = '%sP493-6_T24_MYC_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_P493-6_T24_H3K27AC_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'P493-6_T24_MYC_REGIONS_%s' % (myc_name)
+    #     enhancer_promoter_bash = wrap_enhancer_promoter(p4936_young_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
+    #     os.system('bash %s' % (enhancer_promoter_bash))
 
 
-    #for MM
-    myc_list = ['MM1S_MYC_DMSO']
-    for myc_name in myc_list:
-        input_path = '%sMM1S_MYC_DMSO_peaks.bed' % (macsEnrichedFolder)
-        activity_path = '%sHG19_MM1S_H3K27AC_ACTIVE.txt' % (geneListFolder)
-        analysis_name = 'MM1S_MYC_REGIONS_%s' % (myc_name)
-        enhancer_promoter_bash = wrap_enhancer_promoter(mm1s_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
-        os.system('bash %s' % (enhancer_promoter_bash))
+    # #for sclc
+    # myc_list = ['H128_MYC','H2171_MYC']
+    # for myc_name in myc_list:
+    #     input_path = '%sH2171_MYC_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_H2171_H3K27AC_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'H2171_MYC_REGIONS_%s' % (myc_name)
+    #     enhancer_promoter_bash = wrap_enhancer_promoter(sclc_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
+    #     os.system('bash %s' % (enhancer_promoter_bash))
+
+
+    # #for MM
+    # myc_list = ['MM1S_MYC_DMSO']
+    # for myc_name in myc_list:
+    #     input_path = '%sMM1S_MYC_DMSO_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_MM1S_H3K27AC_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'MM1S_MYC_REGIONS_%s' % (myc_name)
+    #     enhancer_promoter_bash = wrap_enhancer_promoter(mm1s_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
+    #     os.system('bash %s' % (enhancer_promoter_bash))
 
 
 
@@ -326,9 +338,9 @@ def wrap_enhancer_promoter(dataFile,input_path,activity_path,analysis_name,names
 
 
 #==========================================================================
-#==================================The End=================================
+#==================================THE END=================================
 #==========================================================================
 
     
-If __Name__=="__main__":
+if __name__=="__main__":
     main()

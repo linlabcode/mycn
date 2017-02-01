@@ -484,7 +484,7 @@ def make_shep21_mycn_landscape(nb_all_chip_dataFile):
     print('LOADING SHEP21 ACTIVE ENHANCERS')
     #make a collection of enhancers
     shep21_enhancer_file = '%senhancer_rose/SHEP21_0HR_H3K27AC_NOSPIKE_ROSE/SHEP21_0HR_H3K27AC_NOSPIKE_peaks_AllEnhancers.table.txt' % (projectFolder)
-    shep21_enhancer_collection = utils.makeSECollection(shep21_enhancer_file,'SHE21_0HR_H3K27AC_NOSPIKE')
+    shep21_enhancer_collection = utils.makeSECollection(shep21_enhancer_file,'SHEP21_0HR_H3K27AC_NOSPIKE')
 
     #now get the active promoters
     print('LOADING SHEP21 ACTIVE PROMOTERS')
