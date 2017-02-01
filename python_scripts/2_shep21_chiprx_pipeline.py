@@ -165,7 +165,7 @@ def main():
     #this usually takes ~2-3 hours on a reasonably fast machine
     #a 3 hour time out on this entire operation is set
     #if peak calling takes longer than 3 hours, simply run the script again after completion
-    run_macs(shep21_chiprx_dataFile)
+    #run_macs(shep21_chiprx_dataFile)
 
 
     print('\n\n')
@@ -174,8 +174,8 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    scale_factor_path = '%sHG19_SHEP21_CHIPRX_SCALE_FACTORS.txt' % (tableFolder)
-    scale_factor_table = writeScaleFactors(shep21_chiprx_dataFile,namesList=[],output=scale_factor_path)
+    #scale_factor_path = '%sHG19_SHEP21_CHIPRX_SCALE_FACTORS.txt' % (tableFolder)
+    #scale_factor_table = writeScaleFactors(shep21_chiprx_dataFile,namesList=[],output=scale_factor_path)
 
 
     print('\n\n')
@@ -184,8 +184,8 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    scale_factor_table = '%sHG19_SHEP21_CHIPRX_SCALE_FACTORS.txt' % (tableFolder)
-    scaleWiggles(shep21_chiprx_dataFile,scale_factor_table,names_list=[])
+    #scale_factor_table = '%sHG19_SHEP21_CHIPRX_SCALE_FACTORS.txt' % (tableFolder)
+    #scaleWiggles(shep21_chiprx_dataFile,scale_factor_table,names_list=[])
 
 
     print('\n\n')
@@ -194,7 +194,7 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    filterPeaks(shep21_chiprx_dataFile,maskFolder,macsEnrichedFolder,namesList = [],repeatList = [],cutOff = 0.2)
+    #filterPeaks(shep21_chiprx_dataFile,maskFolder,macsEnrichedFolder,namesList = [],repeatList = [],cutOff = 0.2)
 
 
     print('\n\n')
@@ -203,22 +203,22 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #making the intersect and union sets of regions for CTCF and H3K4ME3
-    print('Making stitched intersect and union regions for SHEP21_CTXF_RX')
-    makeStitchedGFF(shep21_chiprx_dataFile,'SHEP21_CTCF_RX',['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX'])
+    # #making the intersect and union sets of regions for CTCF and H3K4ME3
+    # print('Making stitched intersect and union regions for SHEP21_CTXF_RX')
+    # makeStitchedGFF(shep21_chiprx_dataFile,'SHEP21_CTCF_RX',['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX'])
 
-    #print('Making stitched intersect and union regions for SHEP21_H3K4ME3_RX')
-    makeStitchedGFF(shep21_chiprx_dataFile,'SHEP21_H3K4ME3_RX',['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX'])
+    # #print('Making stitched intersect and union regions for SHEP21_H3K4ME3_RX')
+    # makeStitchedGFF(shep21_chiprx_dataFile,'SHEP21_H3K4ME3_RX',['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX'])
 
-    #making the +/- 1kb active TSS gff
-    print('Making active gene tss gff')
-    gene_list_path = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
-    make_tss_gff(gene_list_path,'NB_H3K27AC_ACTIVE_UNION')
+    # #making the +/- 1kb active TSS gff
+    # print('Making active gene tss gff')
+    # gene_list_path = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
+    # make_tss_gff(gene_list_path,'NB_H3K27AC_ACTIVE_UNION')
 
-    #taking mycn sites and subdividing by promoters and enhancers and adding +/- 500 flank
-    mycn_stats_path = '%sHG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (tableFolder)
-    make_mycn_gffs(mycn_stats_path,window=0)
-    make_mycn_gffs(mycn_stats_path,window=500)
+    # #taking mycn sites and subdividing by promoters and enhancers and adding +/- 500 flank
+    # mycn_stats_path = '%sHG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (tableFolder)
+    # make_mycn_gffs(mycn_stats_path,window=0)
+    # make_mycn_gffs(mycn_stats_path,window=500)
 
 
     print('\n\n')
@@ -227,31 +227,31 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #mapping ctcf to ctcf regions
-    gffList = ['%sHG19_SHEP21_CTCF_RX_UNION_-0_+0.gff' % (gffFolder), '%sHG19_SHEP21_CTCF_RX_INTERSECT_-0_+0.gff' % (gffFolder)]
-    names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX','SHEP21_0HR_INPUT_RX_2','SHEP21_2HR_INPUT_RX_2','SHEP21_24HR_INPUT_RX_2']
-    map_regions(shep21_chiprx_dataFile,gffList,names_list)
+    # #mapping ctcf to ctcf regions
+    # gffList = ['%sHG19_SHEP21_CTCF_RX_UNION_-0_+0.gff' % (gffFolder), '%sHG19_SHEP21_CTCF_RX_INTERSECT_-0_+0.gff' % (gffFolder)]
+    # names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX','SHEP21_0HR_INPUT_RX_2','SHEP21_2HR_INPUT_RX_2','SHEP21_24HR_INPUT_RX_2']
+    # map_regions(shep21_chiprx_dataFile,gffList,names_list)
 
-    #mapping h3k4me3 to h3k4me3 regions
-    gffList = ['%sHG19_SHEP21_H3K4ME3_RX_UNION_-0_+0.gff' % (gffFolder), '%sHG19_SHEP21_H3K4ME3_RX_INTERSECT_-0_+0.gff' % (gffFolder)]
-    names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX','SHEP21_0HR_INPUT_RX_2','SHEP21_2HR_INPUT_RX_2','SHEP21_24HR_INPUT_RX_2']
-    map_regions(shep21_chiprx_dataFile,gffList,names_list)
+    # #mapping h3k4me3 to h3k4me3 regions
+    # gffList = ['%sHG19_SHEP21_H3K4ME3_RX_UNION_-0_+0.gff' % (gffFolder), '%sHG19_SHEP21_H3K4ME3_RX_INTERSECT_-0_+0.gff' % (gffFolder)]
+    # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX','SHEP21_0HR_INPUT_RX_2','SHEP21_2HR_INPUT_RX_2','SHEP21_24HR_INPUT_RX_2']
+    # map_regions(shep21_chiprx_dataFile,gffList,names_list)
     
-    #mapping everybody to active TSS locations
-    gffList = ['%sHG19_TSS_NB_H3K27AC_ACTIVE_UNION_-1000_+1000.gff' % (gffFolder)]
-    map_regions(shep21_chiprx_dataFile,gffList,names_list=[])
+    # #mapping everybody to active TSS locations
+    # gffList = ['%sHG19_TSS_NB_H3K27AC_ACTIVE_UNION_-1000_+1000.gff' % (gffFolder)]
+    # map_regions(shep21_chiprx_dataFile,gffList,names_list=[])
 
 
-    #mapping everybody to mycn peaks
-    gffList = ['%sHG19_TSS_NB_H3K27AC_ACTIVE_UNION_-1000_+1000.gff' % (gffFolder)]
-    gffList = ['%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder),
-               '%sHG19_NB_MYCN_CONSERVED_-500_+500.gff' % (gffFolder),
-               '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-0_+0.gff' % (gffFolder),
-               '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-500_+500.gff' % (gffFolder),
-               '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-0_+0.gff' % (gffFolder),
-               '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-500_+500.gff' % (gffFolder),
-               ]
-    map_regions(shep21_chiprx_dataFile,gffList,names_list=[])
+    # #mapping everybody to mycn peaks
+    # gffList = ['%sHG19_TSS_NB_H3K27AC_ACTIVE_UNION_-1000_+1000.gff' % (gffFolder)]
+    # gffList = ['%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder),
+    #            '%sHG19_NB_MYCN_CONSERVED_-500_+500.gff' % (gffFolder),
+    #            '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-0_+0.gff' % (gffFolder),
+    #            '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-500_+500.gff' % (gffFolder),
+    #            '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-0_+0.gff' % (gffFolder),
+    #            '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-500_+500.gff' % (gffFolder),
+    #            ]
+    # map_regions(shep21_chiprx_dataFile,gffList,names_list=[])
 
 
 
@@ -513,6 +513,10 @@ def scaleWiggles(dataFile,scaleTableFile,names_list=[]):
         
 
         wig_out = '%swiggles/%s_scaled.wig' % (projectFolder,name)
+        wig_out_final ='%swiggles/%s_scaled.wig.gz' % (projectFolder,name)
+        if utils.checkOutput(wig_out_final,0,0):
+            print('Found scaled wiggle for %s at %s' % (name,wig_out_final))
+            continue
         cmd = 'gunzip %s' % (wig_path_gz)
         print(cmd)
 

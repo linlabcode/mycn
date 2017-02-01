@@ -172,37 +172,39 @@ def main():
     #a 3 hour time out on this entire operation is set
     #if peak calling takes longer than 3 hours, simply run the script again after completion
 
-    for dataFile in chip_data_list:
-        dataDict = pipeline_dfci.loadDataTable(dataFile)
-        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-        namesList.sort()
-        print(namesList)
-        pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
-        os.chdir(projectFolder) # the silly call macs script has to change into the output dir
-        #so this takes us back to the project folder
+    #replace this with run_macs code
+
+    # for dataFile in chip_data_list:
+    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #     namesList.sort()
+    #     print(namesList)
+    #     pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
+    #     os.chdir(projectFolder) # the silly call macs script has to change into the output dir
+    #     #so this takes us back to the project folder
 
     
-    #to check for completeness, we will try to find all of the peak files
-    peak_calling_done = False
-    while not peak_calling_done:
-        for dataFile in chip_data_list:
-            dataDict = pipeline_dfci.loadDataTable(dataFile)
-            namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-            for name in namesList:
-                peak_path = '%s%s%s/%s_peaks.bed' % (projectFolder,macsFolder,name,name)
-                if utils.checkOutput(peak_path,1,180):
-                    continue
-                    peak_calling_done =True
-                else:
-                    print('Error: peak calling timed out')
-                    sys.exit()
+    # #to check for completeness, we will try to find all of the peak files
+    # peak_calling_done = False
+    # while not peak_calling_done:
+    #     for dataFile in chip_data_list:
+    #         dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #         namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #         for name in namesList:
+    #             peak_path = '%s%s%s/%s_peaks.bed' % (projectFolder,macsFolder,name,name)
+    #             if utils.checkOutput(peak_path,1,180):
+    #                 continue
+    #                 peak_calling_done =True
+    #             else:
+    #                 print('Error: peak calling timed out')
+    #                 sys.exit()
         
                     
-    #now format the macs output
-    for dataFile in chip_data_list:
-        dataDict = pipeline_dfci.loadDataTable(dataFile)
-        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-        pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
+    # #now format the macs output
+    # for dataFile in chip_data_list:
+    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
+    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    #     pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
         
     
         
@@ -223,10 +225,10 @@ def main():
     #here we will identify active promoters in various contexts as those with 
     #an H3K27AC peak in the +/- 1kb tss region
     #UCSC refseq annotations are used for all genes
-    make_nb_active_gene_lists(nb_all_chip_dataFile)
+    #make_nb_active_gene_lists(nb_all_chip_dataFile)
     make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile)
 
-
+    sys.exit()
     print('\n\n')
     print('#======================================================================')
     print('#===============IV. DEFINING NB MYCN AND H3K27AC LANDSCAPE=============')
@@ -246,7 +248,7 @@ def main():
     mycn_bashFileName,mycn_region_map_path,namesList = define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
 
     if not utils.checkOutput(mycn_region_map_path,0,0):
-        print(bashFileName)
+        print(mycn_bashFileName)
         os.system('bash %s' % (mycn_bashFileName))
     
     #now we need to call the R script that creates the rank plots
@@ -424,6 +426,16 @@ def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep
     pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
 
 
+    #this is for P493-6
+    #here we will take the union of all datasets
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_P493-6_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['P493-6_T24_H3K27AC']]
+    output = '%sgeneListFolder/HG19_P493-6_T24_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
+
     #this is for SCLC
     #here we will take the union of all datasets
     mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_SCLC_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
@@ -433,12 +445,21 @@ def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep
     pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
 
 
+    #this is for SCLC
+    #here we will take the union of all datasets
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_SCLC_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['H2171_H3K27AC']]
+    output = '%sgeneListFolder/HG19_H2171_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
     #this is for SHEP ON
     #here we will take the union of all datasets
     mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_SHEP_ON_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
     #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
     setList = [['SHEP_0HR_H3K27AC'],['SHEP_2HR_H3K27AC'],['SHEP_6HR_H3K27AC']]
-    output = '%sgeneListFolder/HG19_SCLC_H3K27AC_ACTIVE.txt' % (projectFolder)
+    output = '%sgeneListFolder/HG19_SHEP_ON_H3K27AC_ACTIVE.txt' % (projectFolder)
     pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
 
 

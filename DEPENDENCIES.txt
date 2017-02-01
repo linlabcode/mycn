@@ -6,6 +6,7 @@ macs 1.4.2
 macs2
 tabix
 bgzip
+gsea
 
 #R
 ggplot2

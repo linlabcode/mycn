@@ -32,7 +32,7 @@ print('group names:')
 print(group_names)
 
 #setting the top number of genes to run on
-top_count = as.numeric(args[10])
+top_count = as.character(args[10])
 print('running analysis on top genes:')
 print(top_count)
 
@@ -182,6 +182,8 @@ plotExpLines <- function(exp_matrix,gene_table,group_names,nBins,top_count,x_vec
 	if(as.character(top_count) == 'all'){
 		top_count = nrow(fold_matrix_ordered)
 		
+	}else{
+		top_count = as.numeric(top_count)
 	}
 
 	#important checkpoint
