@@ -118,13 +118,16 @@ atac_dataFile = '%sdata_tables/ATAC_TABLE.txt' % (projectFolder)
 #ChIP-Seq
 be2c_dataFile = '%sdata_tables/BE2C_TABLE.txt' % (projectFolder)
 mm1s_dataFile = '%sdata_tables/MM1S_TABLE.txt' % (projectFolder)
+u87_dataFile = '%sdata_tables/U87_TABLE.txt' % (projectFolder)
 nb_all_chip_dataFile = '%sdata_tables/NB_ALL.txt' % (projectFolder)
 p4936_young_dataFile = '%sdata_tables/P493-6_YOUNG_TABLE.txt' % (projectFolder)
 sclc_dataFile = '%sdata_tables/SCLC_DATA_TABLE.txt' % (projectFolder)
 shep21_dataFile = '%sdata_tables/SHEP21_TABLE.txt' % (projectFolder)
 shep_on_dataFile = '%sdata_tables/SHEP_ON_TABLE.txt' % (projectFolder)
 
-chip_data_list = [be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile]
+chip_data_list = [be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile,u87_dataFile]
+
+
 #note: all mouse analysis of THMYCN tumors are in a separate script
 
 #CHIP-RX
@@ -134,6 +137,8 @@ shep21_chiprx_dataFile = '%sdata_tables/SHEP21_CHIPRX_TABLE.txt' % (projectFolde
 be2c_rna_drug_dataFile = '%sdata_tables/BE2C_RNA_DRUG_TABLE.txt' % (projectFolder)
 be2c_rna_twist_dataFile = '%sdata_tables/BE2C_RNA_TWIST_TABLE.txt' % (projectFolder)
 shep21_rna_dataFile = '%sdata_tables/SHEP21_DOX_RNA_TABLE.txt' % (projectFolder)
+
+all_data_list = [atac_dataFile,be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile,u87_dataFile,shep21_chiprx_dataFile,be2c_rna_drug_dataFile,be2c_rna_twist_dataFile,shep21_rna_dataFile]
 
 #==========================================================================
 #===========================MAIN METHOD====================================
@@ -157,9 +162,11 @@ def main():
     #This section sanity checks each data table and makes sure both bam and .bai files are accessible
 
     #for ChIP-Seq
+    #edit all of the data files to absolute path the
     for dataFile in chip_data_list:
 
         pipeline_dfci.summary(dataFile)
+
 
     print('\n\n')
     print('#======================================================================')
@@ -172,48 +179,12 @@ def main():
     #a 3 hour time out on this entire operation is set
     #if peak calling takes longer than 3 hours, simply run the script again after completion
 
-    #replace this with run_macs code
 
     # for dataFile in chip_data_list:
-    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
-    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-    #     namesList.sort()
-    #     print(namesList)
-    #     pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
-    #     os.chdir(projectFolder) # the silly call macs script has to change into the output dir
-    #     #so this takes us back to the project folder
 
-    
-    # #to check for completeness, we will try to find all of the peak files
-    # peak_calling_done = False
-    # while not peak_calling_done:
-    #     for dataFile in chip_data_list:
-    #         dataDict = pipeline_dfci.loadDataTable(dataFile)
-    #         namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-    #         for name in namesList:
-    #             peak_path = '%s%s%s/%s_peaks.bed' % (projectFolder,macsFolder,name,name)
-    #             if utils.checkOutput(peak_path,1,180):
-    #                 continue
-    #                 peak_calling_done =True
-    #             else:
-    #                 print('Error: peak calling timed out')
-    #                 sys.exit()
-        
-                    
-    # #now format the macs output
-    # for dataFile in chip_data_list:
-    #     dataDict = pipeline_dfci.loadDataTable(dataFile)
-    #     namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
-    #     pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
-        
-    
-        
-    # #sym linking peak beds
-    # print('sym linking peak files to the macs enriched folder')
-    # file_string = '*_peaks.bed'
-    # source_dir = '%smacsFolder' % (projectFolder)
-    # dest_dir = '%smacsEnriched' % (projectFolder)
-    # utils.link_files(file_string,source_dir,dest_dir)
+    #     run_macs(dataFile)
+
+
 
     print('\n\n')
     print('#======================================================================')
@@ -226,9 +197,9 @@ def main():
     #an H3K27AC peak in the +/- 1kb tss region
     #UCSC refseq annotations are used for all genes
     #make_nb_active_gene_lists(nb_all_chip_dataFile)
-    make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile)
+    
+    make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile,u87_dataFile)
 
-    sys.exit()
     print('\n\n')
     print('#======================================================================')
     print('#===============IV. DEFINING NB MYCN AND H3K27AC LANDSCAPE=============')
@@ -332,6 +303,42 @@ def main():
 
 
 #specific functions written for this analysis
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~RUNNING MACS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+def run_macs(dataFile):
+    dataDict = pipeline_dfci.loadDataTable(dataFile)
+    namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    namesList.sort()
+    print(namesList)
+    pipeline_dfci.callMacs(dataFile,macsFolder,namesList,overwrite=False,pvalue='1e-9')
+    os.chdir(projectFolder) # the silly call macs script has to change into the output dir
+    #so this takes us back to the project folder
+
+    #to check for completeness, we will try to find all of the peak files
+    peak_calling_done = False
+    while not peak_calling_done:
+        dataDict = pipeline_dfci.loadDataTable(dataFile)
+        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+        for name in namesList:
+            peak_path = '%s%s/%s_summits.bed' % (macsFolder,name,name)
+            print('searching for %s' % (peak_path))
+            if utils.checkOutput(peak_path,1,180):
+                peak_calling_done =True
+                print('found %s' % (peak_path))
+                continue
+            else:
+                print('Error: peak calling timed out')
+                sys.exit()
+    
+    #now format the macs output
+    print('formatting macs output')
+    dataDict = pipeline_dfci.loadDataTable(dataFile)
+    namesList = [name for name in dataDict.keys() if name.upper().count('WCE') ==0 and name.upper().count('INPUT') == 0]
+    pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
+    print('Finished running Macs 1.4.2')
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -371,7 +378,7 @@ def make_nb_active_gene_lists(nb_all_chip_dataFile):
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #now we need to make active gene lists in MM1S, P493-6, SCLC, and the SHEP ON system
-def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile):
+def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile,u87_dataFile):
     #first map to enriched for each dataset
 
     #for mm1s
@@ -405,6 +412,15 @@ def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep
     cellTypeList = ['SHEP']
     namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
     pipeline_dfci.mapEnrichedToGFF(shep_on_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+
+    #for u87
+    dataDict = pipeline_dfci.loadDataTable(u87_dataFile)
+    setName = 'U87_TSS_H3K27AC'
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['U87']
+    namesList = [name for name in dataDict.keys() if name.count('H3K27AC') == 1]
+    pipeline_dfci.mapEnrichedToGFF(u87_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
 
 
     #====================
@@ -461,6 +477,15 @@ def make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep
     setList = [['SHEP_0HR_H3K27AC'],['SHEP_2HR_H3K27AC'],['SHEP_6HR_H3K27AC']]
     output = '%sgeneListFolder/HG19_SHEP_ON_H3K27AC_ACTIVE.txt' % (projectFolder)
     pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+    #this is for U87
+    #here we will take the union of all datasets
+    mappedEnrichedFile = '%sHG19_TSS_ALL_-1000_+1000/HG19_TSS_ALL_-1000_+1000_U87_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['U87_H3K27AC']]
+    output = '%sgeneListFolder/HG19_U87_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
 
 
 

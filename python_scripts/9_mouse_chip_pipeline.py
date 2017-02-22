@@ -75,6 +75,7 @@ mappedFolder = '%smappedFolder_mm9/' % (projectFolder)
 wiggleFolder = '%swiggles_mm9/' % (projectFolder)
 metaFolder = '%smeta_mm9/' % (projectFolder)
 metaRoseFolder = '%smeta_rose_mm9/' % (projectFolder)
+roseFolder = '%srose_mm9/' % (projectFolder)
 fastaFolder = '%sfasta_mm9/' % (projectFolder)
 bedFolder = '%sbed_mm9/' % (projectFolder)
 figuresFolder = '%sfigures_mm9/' % (projectFolder)
@@ -90,7 +91,7 @@ tableFolder = '%stables_mm9/' % (projectFolder)
 genomeDirectory = '/grail/genomes/Mus_musculus/UCSC/mm9/Sequence/Chromosomes/'
 
 #making folders
-folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder]
+folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,roseFolder,fastaFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder]
 
 for folder in folderList:
     pipeline_dfci.formatFolder(folder,True)
@@ -135,7 +136,7 @@ def main():
     #for ChIP-Seq
     pipeline_dfci.summary(mouse_dataFile)
 
-    sys.exit()
+
 
     print('\n\n')
     print('#======================================================================')
@@ -147,8 +148,50 @@ def main():
     #this usually takes ~2-3 hours on a reasonably fast machine
     #a 3 hour time out on this entire operation is set
     #if peak calling takes longer than 3 hours, simply run the script again after completion
-    #run_macs(shep21_chiprx_dataFile)
+    #run_macs(mouse_dataFile)
 
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=================II. DEFINING ACTIVE GENES IN MOUSE===================')
+    print('#======================================================================')
+    print('\n\n')
+
+    
+    #here we will identify active promoters in various contexts as those with 
+    #an H3K27AC peak in the +/- 1kb tss region
+    #UCSC refseq annotations are used for all genes
+
+    #make_active_gene_lists(mouse_dataFile)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#==================III. CALLING ROSE TO MAP ENHANCERS==================')
+    print('#======================================================================')
+    print('\n\n')
+
+    #for SCG_H3K27AC
+    analysisName = 'SCG_H3K27AC'
+    namesList = ['SCG_H3K27Ac']
+    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+
+
+    #for CG_H3K27AC
+    analysisName = 'CG_H3K27AC'
+    namesList = ['CG_H3K27Ac']
+    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+
+
+    #for GANGLIA_H3K27AC
+    analysisName = 'GANGLIA_H3K27AC'
+    namesList = ['CG_H3K27Ac','SCG_H3K27Ac']
+    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+
+    #for THMYCN
+    analysisName = 'THMYCN_H3K27AC'
+    namesList = ['THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac','THMYCN1_H3K27Ac']
+    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
 
 
     print('\n\n')
@@ -231,209 +274,159 @@ def run_macs(dataFile):
     pipeline_dfci.formatMacsOutput(dataFile,macsFolder,macsEnrichedFolder,wiggleFolder,wigLink ='',useBackground=True)
     print('Finished running Macs 1.4.2')
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~WRITING SCALE FACTORS~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~DEFINING ACTIVE GENES IN OTHER LINES~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-def writeScaleFactors(dataFile,namesList=[],output=''):
+#now we need to make active gene lists in MM1S, P493-6, SCLC, and the SHEP ON system
+def make_active_gene_lists(mouse_dataFile):
 
     '''
-    creates a table of scale factors based on the rx genome read depth
+    making tss gffs and defining active genes
     '''
     
-    #first set up the output folder
-    #rpm scale factor is what the rpm/bp should be MULTIPLIED by
-    #mouse mapped reads give the denominator for what raw r/bp should be divided by
-    outputTable = [['NAME','HUMAN_MAPPED_READS','MOUSE_MAPPED_READS','RPM_SCALE_FACTOR']]
+    #first define gffs
+    pipeline_dfci.makeGeneGFFs(annotFile,gffFolder,species=genome.upper())
 
+    #first map to enriched for each dataset
+
+    #for thmycn models
+    dataDict = pipeline_dfci.loadDataTable(mouse_dataFile)
+    setName = 'MOUSE_TSS_H3K27AC'
+    gffList = ['%sMM9_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    cellTypeList = ['CG','SCG','THMYCN','THMYCN1','THMYCN2']
+    namesList = [name for name in dataDict.keys() if name.upper().count('H3K27AC') == 1]
+    print(namesList)
+
+    pipeline_dfci.mapEnrichedToGFF(mouse_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,True,namesList,useBackground=True)
+
+
+    #====================
+    #now create the gene lists
+    #this is for THMYCN
+    mappedEnrichedFile = '%sMM9_TSS_ALL_-1000_+1000/MM9_TSS_ALL_-1000_+1000_MOUSE_TSS_H3K27AC.txt' % (mappedEnrichedFolder)
+    #this setList variable defines overlap logic for promoters. In this case, it's asking for the union of all datasets
+    setList = [['CG_H3K27Ac']]
+    output = '%sgeneListFolder_mm9/MM9_CG_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+    setList = [['SCG_H3K27Ac']]
+    output = '%sgeneListFolder_mm9/MM9_SCG_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+    setList = [['SCG_H3K27Ac'],['CG_H3K27Ac']]
+    output = '%sgeneListFolder_mm9/MM9_GANGLIA_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
     
-    dataDict=pipeline_dfci.loadDataTable(dataFile)
+
+    setList = [['THMYCN_139076_H3K27Ac'],['THMYCN_139423_H3K27Ac'],['THMYCN1_H3K27Ac'],['THMYCN2_H3K27Ac']]
+    output = '%sgeneListFolder_mm9/MM9_THMYCN_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~DEFINING NB H3K27AC ENHANCER LANDSCAPE~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def define_enhancer_landscape(mouse_dataFile,analysisName,namesList=[]):
+
+    '''
+    define enhancers using h3k27ac in the 3 datasets that look good:
+    CG, SCG, THMYCN_139076 using regular ROSE2
+    '''
+
+
+    #For SCG baseline
+    #no TSS exclusion and no stitching
+
+    dataDict = pipeline_dfci.loadDataTable(mouse_dataFile)
+    
     if len(namesList) == 0:
-        namesList = [name for name in dataDict.keys()]
-    namesList.sort()
-    print('scaling the following datasets')
+        namesList = [name for name in dataDict.keys() if name.upper().count('H3K27AC') == 1]
 
+    bamFileList = [dataDict[name]['bam'] for name in namesList]
+    bamString = string.join(bamFileList,',')
 
-    for name in namesList:
-        
-        print('WORKING ON %s' % (name))
-        bam_path = dataDict[name]['bam']
-        bam = utils.Bam(bam_path)
-        bam_mmr = float(bam.getTotalReads())/1000000
-        scale_path = string.replace(bam_path,'hg19','mm9')
-        scaleBam = utils.Bam(scale_path)
-        scale_mmr = float(scaleBam.getTotalReads())/1000000
-        #print(bam_path)
-        #print(scale_path)
-        rpm_scale = bam_mmr/scale_mmr
-        scale_line = [bam_mmr,scale_mmr,rpm_scale]
-        scale_line = [round(x,4) for x in scale_line]
-        outputTable.append([name] + scale_line)
+    controlBams = [dataDict[name]['background'] for name in namesList]
+    controlFileList = [dataDict[name]['bam'] for name in controlBams]
+    controlBamString = string.join(controlFileList,',')
 
-    if len(output) == 0:
-        return outputTable
-    else:
-        utils.unParseTable(outputTable,output,'\t')
+    bedFileList = [macsEnrichedFolder + dataDict[name]['enrichedMacs'] for name in namesList]
+    bedString = string.join(bedFileList,',')
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~SCALING WIGGLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-def scaleWiggles(dataFile,scaleTableFile,names_list=[]):
-
-    '''
-    first unzips each wiggle
-    then scales each line by the rpm
-    and rounds to a reasonable number (2 decimal)
-    '''
-
-    dataDict=pipeline_dfci.loadDataTable(dataFile)
-    if len(names_list) == 0:
-        names_list = [name for name in dataDict.keys() if name.count('WCE') ==0 and name.count('INPUT') == 0]
-    names_list.sort()
-    print(names_list)
-
-    print('loading scale factors')
-
-    scale_table = utils.parseTable(scaleTableFile,'\t')
-    scale_dict = {}
-    for line in scale_table[1:]:
-        scale_dict[line[0]] = float(line[2])
-    os.chdir(wiggleFolder)
-                   
-    for name in names_list:
-
-        print('scaling %s' % (name))
-        scale_factor = scale_dict[name]
-        wig_path_gz = '%swiggles/%s_treat_afterfiting_all.wig.gz' % (projectFolder,name)
-        wig_path = '%swiggles/%s_treat_afterfiting_all.wig' % (projectFolder,name)
-        
-
-        wig_out = '%swiggles/%s_scaled.wig' % (projectFolder,name)
-        wig_out_final ='%swiggles/%s_scaled.wig.gz' % (projectFolder,name)
-        if utils.checkOutput(wig_out_final,0,0):
-            print('Found scaled wiggle for %s at %s' % (name,wig_out_final))
-            continue
-        cmd = 'gunzip %s' % (wig_path_gz)
-        print(cmd)
-
-        #this should run to completion
-        os.system(cmd)
-
-        #now open up the new wig
-        wig = open(wig_path,'r')
-        wig_scaled = open(wig_out,'w')
-
-        ticker = 0
-        for line in wig:
-
-            if ticker % 1000000 == 0:
-                print(ticker)
-            ticker+=1
-            if line[0] == 't' or line[0] == 'v':
-                wig_scaled.write(line)
-            else:
-                line = line.rstrip().split('\t')
-                line[1] = str(round(float(line[1])/scale_factor,2))
-                line_string = '\t'.join(line) + '\n'
-                wig_scaled.write(line_string)
-
-
-        wig.close()
-        wig_scaled.close()
-        cmd = 'gzip %s' % (wig_out)
-        print(cmd)
-        os.system(cmd)
-
-        cmd = 'gzip %s' % (wig_path)
-        print(cmd)
-        os.system(cmd)
-    os.chdir(projectFolder)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~FILTERING PEAKS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#CHIPRX peaks have some artifacts at repetitive regions introduced
-#by the addition of mouse spike ins.
-#these have been empirically determined to occur at regions with high
-#LINE, LTR, and SIMPLE repeat density
-
-#for the chiprx code
-def filterPeaks(dataFile,maskFolder,macsEnrichedFolder,namesList = [],repeatList = [],cutOff = 0.2):
-
-    '''                                            
-    filters out regions where cumulative repeat seq exceeds cutoff fraction
-    users selects the repeat classes to aggregate for filtering
-    auto filters the 3 repeat classes LINE, LTR, Simple_repeat                                      
-    outputs a filtered bed and edits the data file
-    '''
-
-    if len(repeatList) == 0:
-        repeatList = ['LINE','LTR','Simple_repeat']
     
-    repeatList = [x.lower() for x in repeatList]
-    #set up a dictionary w/ paths to beds of repeats
-    repeatDict = {}
-    for repeatClass in repeatList:
-        repeatDict[repeatClass] = '%shg19_%s_rmsk.bed.gz' % (maskFolder,repeatClass)
+    outputFolder = '%s%s/' % (metaRoseFolder,analysisName)
+    bashFileName = '%s%s_meta_rose.sh' % (metaRoseFolder,analysisName)
 
-    dataDict = pipeline_dfci.loadDataTable(dataFile)
-    if len(namesList) == 0:
-        namesList = [name for name in dataDict.keys() if name.upper().count('WCE') == 0 and name.upper().count('INPUT') == 0]
+    bashFile = open(bashFileName,'w')
+    bashFile.write('#!/usr/bin/bash\n\n')
+    bashFile.write('cd %s\n' % (pipeline_dir))
 
-    print('Filtering dataset:')
-    for name in namesList:
-        print(name)
-        filter_count = 0
-        ticker = 0
-        peak_path = '%s%s' % (macsEnrichedFolder,dataDict[name]['enrichedMacs'])
-        filtered_path = string.replace(peak_path,'.bed','_filtered.bed')
-        if utils.checkOutput(filtered_path,0,0):
-            print('Filtered output identified for %s at %s' % (name, filtered_path))
-            continue
-        filtered_bed = []
-        peak_bed = utils.parseTable(peak_path,'\t')
+    metaRoseCmd = 'python %sROSE2_META.py -g hg19 -i %s -r %s -c %s -o %s -n %s' % (pipeline_dir,bedString,bamString,controlBamString,outputFolder,analysisName)
 
-        for bed_line in peak_bed:
-            ticker+=1
-            if ticker %1000 == 0:
-                print(ticker)
-            peak_ID = bed_line[3]
-            chrom = bed_line[0]
-            start = int(bed_line[1])
-            stop = int(bed_line[2])
-            enrichment = bed_line[4]
-            length = stop - start
-            locusString = '%s:%s-%s' % (chrom,start,stop)
+    bashFile.write(metaRoseCmd + '\n')
+    bashFile.close()
 
-            repeatFractions = []
-            for repeatClass in repeatList:
+    region_map_path = '%s%s/%s_AllEnhancers.table.txt' % (metaRoseFolder,analysisName,analysisName)
 
-                tabixCmd = 'tabix %s %s' % (repeatDict[repeatClass],locusString)
-                tabix = subprocess.Popen(tabixCmd,stdin = subprocess.PIPE,stderr = subprocess.PIPE,stdout = subprocess.PIPE,shell = True)
-                tabixLines = tabix.stdout.readlines()
-                tabixLines = [x.rstrip().split('\t') for x in tabixLines]
-                overlapFraction = 0.0
-                for repeat_line in tabixLines:
-                    lineStart = int(repeat_line[1])
-                    lineStop = int(repeat_line[2])
-                    lineStart = max(start,lineStart)
-                    lineStop = min(stop,lineStop)
-                    overlapLength = lineStop - lineStart
-                    overlapFraction += float(overlapLength)/float(length)
-                repeatFractions.append(round(overlapFraction,4))
-                    
-            if numpy.sum(repeatFractions) < cutOff:
-                filtered_bed.append(bed_line)
-            else:
-                filter_count +=1
-        print('filtered out %s of %s regions for %s' % (filter_count,len(peak_bed),name))
 
-        utils.unParseTable(filtered_bed,filtered_path,'\t')
+    #runs only if no output detected
+    if not utils.checkOutput(region_map_path,0,0):
+        print(bashFileName)
+        os.system('bash %s' % (bashFileName))
+    return bashFileName,region_map_path,namesList
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~DEFINING NB MYCN BINDING LANDSCAPE~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile):
+
+    '''
+    defines the MYCN baseline using MYCN chips from NGP, KELLY, BE2C, and SHEP21
+    uses the meta rose code and writes out a .sh file for reproducibility
+    '''
+
+    #For MYCN baseline
+    #no TSS exclusion and no stitching
+
+    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+    analysisName = 'NB_MYCN'
+    namesList = [name for name in dataDict.keys() if name.count('MYCN') == 1]
+
+    bamFileList = [dataDict[name]['bam'] for name in namesList]
+    bamString = string.join(bamFileList,',')
+
+    controlBams = [dataDict[name]['background'] for name in namesList]
+    controlFileList = [dataDict[name]['bam'] for name in controlBams]
+    controlBamString = string.join(controlFileList,',')
+
+    bedFileList = [macsEnrichedFolder + dataDict[name]['enrichedMacs'] for name in namesList]
+    bedString = string.join(bedFileList,',')
+
+    roseFolder = '%smeta_rose/' % (projectFolder)
+    roseFolder = utils.formatFolder(roseFolder,True)
+
+    outputFolder = '%s%s/' % (roseFolder,analysisName)
+    bashFileName = '%s%s_meta_rose.sh' % (roseFolder,analysisName)
+
+    bashFile = open(bashFileName,'w')
+    bashFile.write('#!/usr/bin/bash\n\n')
+    bashFile.write('cd %s\n' % (pipeline_dir))
+
+    metaRoseCmd = 'python %sROSE2_META.py -g hg19 -i %s -r %s -c %s -o %s -n %s -t 0 -s 0 --mask %s' % (pipeline_dir,bedString,bamString,controlBamString,outputFolder,analysisName,maskFile)
+
+    bashFile.write(metaRoseCmd + '\n')
+    bashFile.close()
+
+    #this is the expeceted region map output
+    region_map_path = '%s%s/%s_0KB_STITCHED_ENHANCER_REGION_MAP.txt' % (roseFolder,analysisName,analysisName)
+    return bashFileName,region_map_path,namesList
 
 
 

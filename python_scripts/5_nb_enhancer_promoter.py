@@ -116,8 +116,8 @@ p4936_young_dataFile = '%sdata_tables/P493-6_YOUNG_TABLE.txt' % (projectFolder)
 sclc_dataFile = '%sdata_tables/SCLC_DATA_TABLE.txt' % (projectFolder)
 shep21_dataFile = '%sdata_tables/SHEP21_TABLE.txt' % (projectFolder)
 shep_on_dataFile = '%sdata_tables/SHEP_ON_TABLE.txt' % (projectFolder)
-
-chip_data_list = [be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile]
+u87_dataFile = '%sdata_tables/U87_TABLE.txt' % (projectFolder)
+chip_data_list = [be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile,u87_dataFile]
 #note: all mouse analysis of THMYCN tumors are in a separate script
 
 #CHIP-RX
@@ -193,29 +193,90 @@ def main():
     #     os.system('bash %s' % (nb_enhancer_promoter_bash))
 
 
+    # #for SHEP21 nospike
+    # mycn_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # for mycn_name in mycn_list:
+    #     input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_NO_WCE_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep21_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name],useBackground=False)
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+    # #for SHEP21 chiprx
+    # mycn_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    # for mycn_name in mycn_list:
+    #     input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_NO_WCE_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep21_chiprx_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name],useBackground=False)
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+
+
+    # #for nb conserved regions
+    # #for SHEP21 nospike
+    # mycn_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # for mycn_name in mycn_list:
+
+    #     input_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+    #     activity_path = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
+    #     analysis_name = 'NB_MYCN_CONSERVED_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep21_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+    # #for SHEP21 chiprx
+    # mycn_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    # for mycn_name in mycn_list:
+
+    #     input_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+    #     activity_path = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
+    #     analysis_name = 'NB_MYCN_CONSERVED_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep21_chiprx_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+
+
+
+
+
+
+
+
+
     print('\n\n')
     print('#======================================================================')
     print('#===============IV. ENHANCER PROMOTER IN SHEP ON SYSTEM================')
     print('#======================================================================')
     print('\n\n')
 
-    #for SHEP21 on
-    mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
-    for mycn_name in mycn_list:
-        input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
-        activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
-        analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_%s' % (mycn_name)
-        nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
-        os.system('bash %s' % (nb_enhancer_promoter_bash))
+    # #for SHEP21 on
+    # mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    # for mycn_name in mycn_list:
+    #     input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
 
-    #for SHEP21 on @ NB conserved regions
-    mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
-    for mycn_name in mycn_list:
-        input_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
-        activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
-        analysis_name = 'NB_MYCN_CONSERVED_%s' % (mycn_name)
-        nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
-        os.system('bash %s' % (nb_enhancer_promoter_bash))
+    #for SHEP21 on no background
+    # mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    # for mycn_name in mycn_list:
+    #     input_path = '%sSHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'SHEP21_0HR_MYCN_NOSPIKE_REGIONS_NO_WCE_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name],useBackground=False)
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
+
+
+
+    # #for SHEP21 on @ NB conserved regions
+    # mycn_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    # for mycn_name in mycn_list:
+    #     input_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+    #     activity_path = '%sHG19_SHEP21_0HR_H3K27AC_NOSPIKE_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'NB_MYCN_CONSERVED_%s' % (mycn_name)
+    #     nb_enhancer_promoter_bash = wrap_enhancer_promoter(shep_on_dataFile,input_path,activity_path,analysis_name,names_list = [mycn_name])
+    #     os.system('bash %s' % (nb_enhancer_promoter_bash))
 
 
 
@@ -245,7 +306,7 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    # #for p493-6, mm1s, h2171, and h128
+    # #for p493-6, mm1s, h2171, h128, and u87
 
     # #for p493-6
     # myc_list = ['P493-6_T0_MYC','P493-6_T1_MYC','P493-6_T24_MYC']
@@ -278,6 +339,17 @@ def main():
 
 
 
+    #for MM
+    myc_list = ['U87_MYC']
+    for myc_name in myc_list:
+        input_path = '%sU87_MYC_peaks.bed' % (macsEnrichedFolder)
+        activity_path = '%sHG19_U87_H3K27AC_ACTIVE.txt' % (geneListFolder)
+        analysis_name = 'U87_MYC_REGIONS_%s' % (myc_name)
+        enhancer_promoter_bash = wrap_enhancer_promoter(u87_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
+        os.system('bash %s' % (enhancer_promoter_bash))
+
+
+
 
 
 #==========================================================================
@@ -291,7 +363,7 @@ def main():
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~RUNNING ENHANCER PROMOTER ANALYSIS FOR NB CONSERVED PEAKS~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def wrap_enhancer_promoter(dataFile,input_path,activity_path,analysis_name,names_list = []):
+def wrap_enhancer_promoter(dataFile,input_path,activity_path,analysis_name,names_list = [],useBackground=True):
 
     '''
     runs enhancer promoter on everybody with the conserved regions and union of active genes
@@ -324,14 +396,27 @@ def wrap_enhancer_promoter(dataFile,input_path,activity_path,analysis_name,names
     ep_bash.write('#!/usr/bin/bash\n\n\n')
     
     ep_bash.write('#enhancer promoter analysis for %s\n\n' % (analysis_name))
-    
-    python_cmd = 'python %senhancerPromoter.py -b %s -c %s -g %s -i %s -o %s -a %s --name %s --tads %s --top 2000\n\n' % (pipeline_dir,bams_string,background_string,genome.upper(),input_path,ep_folder,activity_path,analysis_name,tads_path)
-    
-    ep_bash.write(python_cmd)
 
-    python_cmd = 'python %senhancerPromoter.py -b %s -c %s -g %s -i %s -o %s -a %s --name %s --tads %s --top 5000\n\n' % (pipeline_dir,bams_string,background_string,genome.upper(),input_path,ep_folder,activity_path,analysis_name,tads_path)
-    
-    ep_bash.write(python_cmd)
+    if useBackground:
+        python_cmd = 'python %senhancerPromoter.py -b %s -c %s -g %s -i %s -o %s -a %s --name %s --tads %s --top 2000\n\n' % (pipeline_dir,bams_string,background_string,genome.upper(),input_path,ep_folder,activity_path,analysis_name,tads_path)
+
+        ep_bash.write(python_cmd)
+
+        python_cmd = 'python %senhancerPromoter.py -b %s -c %s -g %s -i %s -o %s -a %s --name %s --tads %s --top 5000\n\n' % (pipeline_dir,bams_string,background_string,genome.upper(),input_path,ep_folder,activity_path,analysis_name,tads_path)
+
+        ep_bash.write(python_cmd)
+    else:
+        python_cmd = 'python %senhancerPromoter.py -b %s -g %s -i %s -o %s -a %s --name %s --tads %s --top 2000\n\n' % (pipeline_dir,bams_string,genome.upper(),input_path,ep_folder,activity_path,analysis_name,tads_path)
+
+        ep_bash.write(python_cmd)
+
+        python_cmd = 'python %senhancerPromoter.py -b %s -g %s -i %s -o %s -a %s --name %s --tads %s --top 5000\n\n' % (pipeline_dir,bams_string,genome.upper(),input_path,ep_folder,activity_path,analysis_name,tads_path)
+
+        ep_bash.write(python_cmd)
+
+
+
+
     ep_bash.close()
     
     return(ep_bash_path)
