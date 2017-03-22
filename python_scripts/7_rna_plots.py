@@ -41,7 +41,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/src/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -65,7 +65,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -94,7 +94,7 @@ maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 gtfFile = '%sgtf/genes_ercc.gtf' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder,maskFolder,rnaFolder]
@@ -169,16 +169,19 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
+    #make the folder to store output figures
+
+    utils.formatFolder('%sfigures/6_rna_line_plots/' % (projectFolder),True)
     #we have 3 RNA-Seq datasets
 
     #first is shep21 at the mycn conserved regions w/ the replicate dropped
     #and at shep21 defined regions
-    #wrap_shep21()
+    wrap_shep21()
     wrap_be2c_jq1()
 
     wrap_be2c_cd532()
     #now we need to run it w/ the replicate removed
-    #wrap_be2c_shTwist()
+    wrap_be2c_shTwist()
 
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
@@ -222,9 +225,9 @@ def wrap_shep21():
     exp_norm_path = '%srna_seq/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    top_list = [5000,'all']
-    bin_list = [3,5]
-    for i in range(2):
+    top_list = [5000,5000,'all']
+    bin_list = [3,5,5]
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -237,7 +240,7 @@ def wrap_shep21():
     exp_norm_path = '%srna_seq/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    for i in range(2):
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -278,9 +281,9 @@ def wrap_be2c_jq1():
     exp_norm_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    top_list = [5000,'all']
-    bin_list = [3,5]
-    for i in range(2):
+    top_list = [5000,5000,'all']
+    bin_list = [3,5,5]
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -293,7 +296,7 @@ def wrap_be2c_jq1():
     exp_norm_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    for i in range(2):
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -334,9 +337,9 @@ def wrap_be2c_cd532():
     exp_norm_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    top_list = [5000,'all']
-    bin_list = [3,5]
-    for i in range(2):
+    top_list = [5000,5000,'all']
+    bin_list = [3,5,5]
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -349,7 +352,7 @@ def wrap_be2c_cd532():
     exp_norm_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/be2c_drug_cufflinks/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    for i in range(2):
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -394,9 +397,9 @@ def wrap_be2c_shTwist():
     exp_raw_path = '%srna_seq/be2c_twist_cufflinks/BE2C_TWIST_cuffnorm/output/BE2C_TWIST_all_fpkm_exprs_raw.txt' % (projectFolder)
 
 
-    top_list = [5000,'all']
-    bin_list = [3,5]
-    for i in range(2):
+    top_list = [5000,5000,'all']
+    bin_list = [3,5,5]
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)
@@ -409,7 +412,7 @@ def wrap_be2c_shTwist():
     exp_norm_path = '%srna_seq/be2c_twist_cufflinks/BE2C_TWIST_cuffnorm/output/BE2C_TWIST_all_fpkm_exprs_norm.txt' % (projectFolder)
     exp_raw_path = '%srna_seq/be2c_twist_cufflinks/BE2C_TWIST_cuffnorm/output/BE2C_TWIST_all_fpkm_exprs_raw.txt' % (projectFolder)
 
-    for i in range(2):
+    for i in range(3):
         nBins = bin_list[i]
         top_count = top_list[i]
         r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s %s %s' %(rna_r_script_path,gene_table_path,exp_norm_path,exp_raw_path,group_string,str(top_count),str(nBins),analysis_name,x_string,color_string,projectFolder)

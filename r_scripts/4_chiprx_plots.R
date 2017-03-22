@@ -168,7 +168,7 @@ print('making corrected signal matrix')
 corrected_matrix = makeCorrectedMatrix(signal_table,scale_table,sample_names,background_names)
 
 
-plot_path = paste(projectFolder,'figures/4_',plotName,'.pdf',sep='')
+plot_path = paste(projectFolder,'figures/4_chiprx_plots/4_',plotName,'.pdf',sep='')
 print(plot_path)
 pdf(file=plot_path,width = 10,height = 8)
 par(mfrow=c(1,2))

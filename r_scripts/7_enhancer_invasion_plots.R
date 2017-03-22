@@ -1,5 +1,4 @@
-#6_rna_line_plots.R
-
+#7_enhancer_invasion_plots.R
 
 
 #produces line plots of mean changes in gene expression

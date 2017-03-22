@@ -171,8 +171,52 @@ def main():
     name1= 'SHEP21_0HR_TWIST'
     name2= 'SHEP21_24HR_B_TWIST'
     analysis_name = 'SHEP21_TWIST1'
-    wrapDRose(shep21_dataFile,name1,name2,analysis_name)
+    rank_gff_path = wrapDRose(shep21_dataFile,name1,name2,analysis_name)
 
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=================III. MAPPING MYCN DATA TO RANK GFF===================')
+    print('#======================================================================')
+    print('\n\n')
+
+    #for shep21 nospike
+    gffList = [rank_gff_path]
+    dataDict = pipeline_dfci.loadDataTable(shep21_dataFile)
+    names_list = [name for name in dataDict.keys() if name.count('MYCN') == 1 or name.count('INPUT') == 1 or name.count('TWIST') == 1 and name.count('rep2') == 0]
+    print(names_list)
+    #map_regions(shep21_dataFile,gffList,names_list)
+
+    gffList = ['%smacsEnriched/SHEP21_0HR_TWIST_peaks.bed' % (projectFolder)]
+    #map_regions(shep21_dataFile,gffList,names_list)
+
+    #make a gff of twist and mycn sites at 0hr
+    twist_collection =utils.importBoundRegion('%smacsEnriched/SHEP21_0HR_TWIST_peaks.bed' % (projectFolder),'SHEP21_0HR_TWIST')
+
+    mycn_collection =utils.importBoundRegion('%smacsEnriched/SHEP21_0HR_MYCN_NOSPIKE_peaks.bed' % (projectFolder),'SHEP21_0HR_MYCN_NOSPIKE')
+
+    all_loci = twist_collection.getLoci() + mycn_collection.getLoci()
+    all_collection = utils.LocusCollection(all_loci,50)
+    stitched_collection = all_collection.stitchCollection()
+
+    stitched_loci = stitched_collection.getLoci()
+    
+    overlap_loci = []
+    for locus in stitched_loci:
+        if len(twist_collection.getOverlap(locus,'both')) > 0 and len(mycn_collection.getOverlap(locus,'both')) > 0:
+            overlap_loci.append(locus)
+
+    overlap_collection = utils.LocusCollection(overlap_loci,50)
+    overlap_gff = utils.locusCollectionToGFF(overlap_collection)
+    overlap_gff_path = '%sHG19_SHEP21_0HR_TWIST_MYCN_INTERSECTION_-0_+0.gff' % (gffFolder)
+    utils.unParseTable(overlap_gff,overlap_gff_path,'\t')
+
+    gffList = [overlap_gff_path]
+    map_regions(shep21_dataFile,gffList,names_list)
+
+
+    
+    
 
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
@@ -218,12 +262,71 @@ def wrapDRose(dataFile,name1,name2,analysis_name):
     bashFile.write('#!/usr/bin/bash\n\n')
     
     bashFile.write('#dynamic rose on twist datasets for %s\n\n' % (analysis_name))
-                   
-    dynamic_cmd = 'python %sdynamicEnhancer.py -g %s -d %s -n %s,%s -r %s,%s -o %s -a' % (pipeline_dir,genome,dataFile,name1,name2,rose_folder_1,rose_folder_2,dynamicFolder)
+
+    dynamic_cmd = 'python %sdynamicEnhancer.py -g %s -d %s -n %s,%s -r %s,%s -o %s%s/ -a' % (pipeline_dir,genome,dataFile,name1,name2,rose_folder_1,rose_folder_2,dynamicFolder,analysis_name)
     bashFile.write(dynamic_cmd+'\n\n')
     bashFile.close()
 
-    os.system('bash %s' % (bashFileName))
+    rank_path = '%s%s/output/%s_%s_%s_merged_MERGED_ENHANCERS_RANK_TABLE.txt' % (dynamicFolder,analysis_name,genome.upper(),name1,name2)
+
+    print(rank_path)
+    if not utils.checkOutput(rank_path,0.1,0.1):
+        #only run if you can't find the terminal output
+        print('Running dynamic rose from %s' % (bashFileName))
+        os.system('bash %s' % (bashFileName))
+    
+
+    if  utils.checkOutput(rank_path,1,30):
+        print('Found dynamic rose output at %s' % (rank_path))
+    
+        rank_table= utils.parseTable(rank_path,'\t')
+        rank_gff = []
+        for line in rank_table[1:]:
+            gff_line = [line[1],line[0],'',line[2],line[3],'','.','',line[0]]
+            rank_gff.append(gff_line)
+            
+            
+        rank_gff_path = '%s%s_%s_RANK.gff' % (gffFolder,genome.upper(),analysis_name)
+        print('writing rank table as a gff to %s' % (rank_gff_path))
+        utils.unParseTable(rank_gff,rank_gff_path,'\t')
+        return rank_gff_path
+    else:
+        print('Error: operation timed out. Cannot find expected dynamic output at %s' % (rank_path))
+        sys.exit()
+        
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~MAPPING REGIONS FUNCTION~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+def map_regions(dataFile,gffList,names_list=[]):
+
+    '''
+    making a normalized binding signal table at all regions
+    '''
+
+    #since each bam has different read lengths, important to carefully normalize quantification
+    dataDict = pipeline_dfci.loadDataTable(dataFile)
+    dataFile_name = dataFile.split('/')[-1].split('.')[0]
+
+    if len(names_list) == 0:
+        names_list = dataDict.keys()
+    names_list.sort()
+    
+    for name in names_list:
+        bam = utils.Bam(dataDict[name]['bam'])
+        read_length = bam.getReadLengths()[0]
+        bam_extension = 200-read_length
+        print('For dataset %s using an extension of %s' % (name,bam_extension))
+        pipeline_dfci.mapBamsBatch(dataFile,gffList,mappedFolder,overWrite =False,namesList = [name],extension=bam_extension,rpm=True)
+
+    #want a signal table of all datasets to each gff
+    print('Writing signal tables for each gff:')
+    for gffFile in gffList:
+        gffName = gffFile.split('/')[-1].split('.')[0]
+        signal_table_path = '%s%s_%s_SIGNAL.txt' % (signalFolder,gffName,dataFile_name)
+        print(signal_table_path)
+        pipeline_dfci.makeSignalTable(dataFile,gffFile,mappedFolder,namesList = names_list,medianNorm=False,output =signal_table_path)
 
 
 

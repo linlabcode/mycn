@@ -39,7 +39,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -63,7 +63,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -116,6 +116,7 @@ p4936_young_dataFile = '%sdata_tables/P493-6_YOUNG_TABLE.txt' % (projectFolder)
 sclc_dataFile = '%sdata_tables/SCLC_DATA_TABLE.txt' % (projectFolder)
 shep21_dataFile = '%sdata_tables/SHEP21_TABLE.txt' % (projectFolder)
 shep_on_dataFile = '%sdata_tables/SHEP_ON_TABLE.txt' % (projectFolder)
+myc_high_dataFile = '%sdata_tables/MYC_HIGH_TABLE.txt' % (projectFolder)
 
 chip_data_list = [be2c_dataFile,mm1s_dataFile,nb_all_chip_dataFile,p4936_young_dataFile,sclc_dataFile,shep21_dataFile,shep_on_dataFile]
 #note: all mouse analysis of THMYCN tumors are in a separate script
@@ -161,25 +162,107 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #at a given fdr cutoff, grab the NES pathways  
+    # #at a given fdr cutoff, grab the NES pathways  
     
-    nes_folder = utils.formatFolder('%snes_tables/' % (projectFolder),True)
+    # nes_folder = utils.formatFolder('%snes_tables/' % (projectFolder),True)
 
-    #for top 2k
-    nes_path_list = ['%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_top_5000_nes.txt' % (projectFolder),
-                     '%senhancerPromoter/H2171_MYC_REGIONS_H2171_MYC/H2171_MYC_REGIONS_H2171_MYC_top_5000_nes.txt' % (projectFolder),
-                     '%senhancerPromoter/MM1S_MYC_REGIONS_MM1S_MYC_DMSO/MM1S_MYC_REGIONS_MM1S_MYC_DMSO_top_5000_nes.txt' % (projectFolder),
-                     '%senhancerPromoter/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC_top_5000_nes.txt' % (projectFolder),
+    # #for top 5k regions
+    # nes_path_list = ['%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/H2171_MYC_REGIONS_H2171_MYC/H2171_MYC_REGIONS_H2171_MYC_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/MM1S_MYC_REGIONS_MM1S_MYC_DMSO/MM1S_MYC_REGIONS_MM1S_MYC_DMSO_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/U87_MYC_REGIONS_U87_MYC/U87_MYC_REGIONS_U87_MYC_top_5000_nes.txt' % (projectFolder),
+    #                  ]
+
+    # names_list = ['NB_MYCN_CONSERVED','H2171','MM1S','P493-6_T24','U87']
+    # output_path = '%sMYC_HIGH_NES.txt' % (nes_folder)
+    # makeNESTable(nes_path_list,names_list,output_path)
+                     
+    
+    # #for shep21 nospike shutdown system
+    # nes_path_list = ['%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_0HR_MYCN_NOSPIKE/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_0HR_MYCN_NOSPIKE_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_2HR_MYCN_NOSPIKE/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_2HR_MYCN_NOSPIKE_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_24HR_MYCN_NOSPIKE/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_24HR_MYCN_NOSPIKE_top_5000_nes.txt' % (projectFolder),
+    #                  ]
+
+    # names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # output_path = '%sSHEP21_MYCN_NOSPIKE_NES.txt' % (nes_folder)
+    # makeNESTable(nes_path_list,names_list,output_path)
+
+
+    # #for shep on induction system
+    # nes_path_list = ['%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP_0HR_MYCN/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP_0HR_MYCN_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP_2HR_MYCN/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP_2HR_MYCN_top_5000_nes.txt' % (projectFolder),
+    #                  '%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP_6HR_MYCN/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP_6HR_MYCN_top_5000_nes.txt' % (projectFolder),
+    #                  ]
+
+    # names_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    # output_path = '%sSHEP_ON_NES.txt' % (nes_folder)
+    # makeNESTable(nes_path_list,names_list,output_path)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#========================III. CALLING HEATMAP==========================')
+    print('#======================================================================')
+    print('\n\n')
+
+    # #for high myc
+    # nes_path = '%sMYC_HIGH_NES.txt' % (nes_folder)
+    # wrapHeatmap(nes_path,0.01,2)
+
+
+
+    # #for shep21 nospike
+    # nes_path = '%sSHEP21_MYCN_NOSPIKE_NES.txt' % (nes_folder)
+    # wrapHeatmap(nes_path,0.1,2)
+    
+    # #for shep on
+    # nes_path = '%sSHEP_ON_NES.txt' % (nes_folder)
+    # wrapHeatmap(nes_path,0.1,2)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================IV. MAKING TSS DISTAL GFFS=======================')
+    print('#======================================================================')
+    print('\n\n')
+
+
+    #we want the peak list to cover NB_MYCN_CONSERVED, P4936, MM1S, H2171,U87
+
+    #for top 5k regions
+    peak_path_list = ['%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_PEAK_TABLE.txt' % (projectFolder),
+                     '%senhancerPromoter/H2171_MYC_REGIONS_H2171_MYC/H2171_MYC_REGIONS_H2171_MYC_PEAK_TABLE.txt' % (projectFolder),
+                     '%senhancerPromoter/MM1S_MYC_REGIONS_MM1S_MYC_DMSO/MM1S_MYC_REGIONS_MM1S_MYC_DMSO_PEAK_TABLE.txt' % (projectFolder),
+                     '%senhancerPromoter/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC_PEAK_TABLE.txt' % (projectFolder),
+                     '%senhancerPromoter/U87_MYC_REGIONS_U87_MYC/U87_MYC_REGIONS_U87_MYC_PEAK_TABLE.txt' % (projectFolder),
                      ]
 
-    names_list = ['NB_MYCN_CONSERVED','H2171','MM1S','P493-6_T24']
-    output_path = '%sMYC_HIGH_NES.txt' % (nes_folder)
-    makeNESTable(nes_path_list,names_list,output_path)
-                     
+
+    tss_gff_path,distal_gff_path = makePeakGFFs(peak_path_list)
 
 
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================V. MAPPING MYC TO REGIONS========================')
+    print('#======================================================================')
+    print('\n\n')
 
+    gffList = [tss_gff_path,distal_gff_path]
 
+    #will have to call map_regions 5 times
+    #first on all nb
+    dataFile_list = [nb_all_chip_dataFile,myc_high_dataFile]
+    for dataFile in dataFile_list:
+
+        dataDict= pipeline_dfci.loadDataTable(dataFile)
+        names_list = [name for name in dataDict if name.count('MYC') > 0]
+        background_list = [dataDict[name]['background'] for name in names_list]
+        map_list = names_list + background_list
+        print(map_list)
+        
+        pipeline_dfci.map_regions(dataFile,gffList,mappedFolder,signalFolder,map_list,medianNorm=False,output='')
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
 #==========================================================================
@@ -263,8 +346,78 @@ def makeNESTable(nes_path_list,names_list,output =''):
         return nes_table
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~WRAP HEATMAP PLOTTER~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
+def wrapHeatmap(nes_path,fdr_cut,enrich_cut):
 
+    '''
+    wraps the Rscript to make nes heatmap plots
+    '''
+    rscript_path = '%sr_scripts/8_nes_heatmaps.R' % (projectFolder)
+
+    rcmd = 'Rscript %s %s %s %s %s' % (rscript_path,nes_path,fdr_cut,enrich_cut,projectFolder)
+    print(rcmd)
+    os.system(rcmd)
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~MAKE COMBINED DISTAL/TSS GFFS~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+def makePeakGFFs(peak_path_list):
+
+    '''
+    makes a stitched gff for all MYC bound TSS and Distal regions across all datasets
+    '''
+
+    #setting the output
+    tss_gff_path = '%sHG19_MYC_TSS_REGIONS_-0_+0.gff' % (gffFolder)
+    distal_gff_path = '%sHG19_MYC_DISTAL_REGIONS_-0_+0.gff' % (gffFolder)
+
+    #check to see if already done
+    if utils.checkOutput(tss_gff_path,0.1,0.1) and utils.checkOutput(distal_gff_path,0.1,0.1):
+        print('OUTPUT FOUND AT %s and %s' % (tss_gff_path,distal_gff_path))
+        return tss_gff_path,distal_gff_path
+
+    #emtpy loci lists to hold everything
+    tss_loci = []
+    distal_loci = []
+
+    
+    for peak_path in peak_path_list:
+        print('processing %s' % (peak_path))
+
+        peak_table=  utils.parseTable(peak_path,'\t')
+
+        for line in peak_table[1:]:
+            peak_locus = utils.Locus(line[1],line[2],line[3],'.')
+            if int(line[5]) == 0:
+                distal_loci.append(peak_locus)
+            else:
+                tss_loci.append(peak_locus)
+
+    #now combind the loci
+    print('stitching loci')
+    distal_collection = utils.LocusCollection(distal_loci,50)
+    tss_collection = utils.LocusCollection(tss_loci,50)
+
+    stitched_distal_collection = distal_collection.stitchCollection()
+    stitched_tss_collection = tss_collection.stitchCollection()
+
+    #now make the gffs
+    distal_gff= utils.locusCollectionToGFF(distal_collection)
+    tss_gff= utils.locusCollectionToGFF(tss_collection)
+
+    #now write to disk
+    utils.unParseTable(distal_gff,distal_gff_path,'\t')
+    utils.unParseTable(tss_gff,tss_gff_path,'\t')
+    
+    return tss_gff_path,distal_gff_path
 
 
 #==========================================================================

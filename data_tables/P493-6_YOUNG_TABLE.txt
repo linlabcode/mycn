@@ -2,12 +2,15 @@ FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	F
 ./bam/hg19/	20120522_2878	hg19	P493-6_T0_H3K27AC	P493-6_T0_WCE		P493-6_T0_H3K27AC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444433/SRR444433.sra
 ./bam/hg19/	20120522_519	hg19	P493-6_T0_MYC	P493-6_T0_WCE		P493-6_T0_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444430/SRR444430.sra
 ./bam/hg19/	20120522_2890	hg19	P493-6_T0_RNA_POL2	P493-6_T0_WCE		P493-6_T0_RNA_POL2_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444459/SRR444459.sra
+./bam/hg19/	20120522_2884	hg19	P493-6_T0_MAX	P493-6_T0_WCE		P493-6_T0_MAX_peaks.bed	0,0,0	NA
 ./bam/hg19/	20120522_527	hg19	P493-6_T0_WCE	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444464/SRR444464.sra
 ./bam/hg19/	20120522_2879	hg19	P493-6_T1_H3K27AC	P493-6_T1_WCE		P493-6_T1_H3K27AC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444434/SRR444434.sra
 ./bam/hg19/	20120522_520	hg19	P493-6_T1_MYC	P493-6_T1_WCE		P493-6_T1_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444431/SRR444431.sra
 ./bam/hg19/	20120522_2891	hg19	P493-6_T1_RNA_POL2	P493-6_T1_WCE		P493-6_T1_RNA_POL2_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444460/SRR444460.sra
+./bam/hg19/	20120522_2885	hg19	P493-6_T1_MAX	P493-6_T1_WCE		P493-6_T1_MAX_peaks.bed	0,0,0	NA
 ./bam/hg19/	20120522_528	hg19	P493-6_T1_WCE	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444465/SRR444465.sra
 ./bam/hg19/	20120522_2880	hg19	P493-6_T24_H3K27AC	P493-6_T24_WCE		P493-6_T24_H3K27AC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444435/SRR444435.sra
 ./bam/hg19/	20120522_518	hg19	P493-6_T24_MYC	P493-6_T24_WCE		P493-6_T24_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444429/SRR444429.sra
 ./bam/hg19/	20120522_2892	hg19	P493-6_T24_RNA_POL2	P493-6_T24_WCE		P493-6_T24_RNA_POL2_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444461/SRR444461.sra
+./bam/hg19/	20120522_2886	hg19	P493-6_T24_MAX	P493-6_T24_WCE		P493-6_T24_MAX_peaks.bed	0,0,0	NA
 ./bam/hg19/	20120522_529	hg19	P493-6_T24_WCE	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444466/SRR444466.sra

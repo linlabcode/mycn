@@ -39,7 +39,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/src/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -63,7 +63,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -87,7 +87,7 @@ maskFolder = '%smasks/' % (projectFolder)
 maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder,maskFolder]
@@ -209,6 +209,9 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
+    #set the output folder
+    utils.formatFolder('%sfigures/5_chiprx_heatmaps/' % projectFolder,True)
+
     # #==========================================
     # #for shep21 mycn chiprx
     # plot_name = 'SHEP21_MYCN_RX'
@@ -261,6 +264,28 @@ def main():
 
 
     # #==========================================
+    # #for shep21 RNA Pol II chiprx
+    # plot_name = 'SHEP21_POL2_RX'
+    # names_list = ['SHEP21_0HR_POL2_RX','SHEP21_2HR_POL2_RX','SHEP21_24HR_POL2_RX']
+    # gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
+    #             ]
+    # plot_color = 'black'
+    # makeHeatmap(names_list,gff_list,plot_name,plot_color)
+
+
+    # #==========================================
+    # #for shep21 RNA Pol II NOSPIKE
+    # plot_name = 'SHEP21_POL2_NOSPIKE'
+    # names_list = ['SHEP21_0HR_POL2_NOSPIKE','SHEP21_2HR_POL2_NOSPIKE','SHEP21_24HR_POL2_NOSPIKE']
+    # gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
+    #             ]
+    # plot_color = 'black'
+    # makeHeatmap(names_list,gff_list,plot_name,plot_color)
+
+
+    # #==========================================
     # #for shep21 H3K4ME3 chiprx
     # plot_name = 'SHEP21_H3K4ME3_RX'
     # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
@@ -276,137 +301,183 @@ def main():
     print('#=====================VII. MAKING BOXPLOTS ============================')
     print('#======================================================================')
     print('\n\n')
+    utils.formatFolder('%sfigures/4_chiprx_plots/' % projectFolder,True)
+
+    # #=============================================================================
+    # #for nb mycn chiprx 
+    # set_name = 'MYCN_CHIPRX'
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
+    # names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
+    # names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # #=============================================================================
+    # #for nb mycn chip no spike
+    # set_name = 'MYCN_NOSPIKE'
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
+    # names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
+    # names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+
+
+    # #=============================================================================
+    # #for nb h3k27ac chiprx 
+    # set_name = 'H3K27AC_CHIPRX'
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
+    # names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
+    # names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # #=============================================================================
+    # #for nb H3K27ac chip no spike
+    # set_name = 'H3K27AC_NOSPIKE'
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
+    # names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
+    # names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
+    # makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
+
+
+    # #=============================================================================
+    # #for nb ctcf chiprx 
+    # set_name = 'CTCF_CHIPRX'
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
+    # names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
+
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
+    # names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
     #=============================================================================
-    #for nb mycn chiprx 
-    set_name = 'MYCN_CHIPRX'
+    #for nb RNA Pol II chiprx 
+    set_name = 'POL2_RX'
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    names_list = ['SHEP21_0HR_POL2_RX','SHEP21_2HR_POL2_RX','SHEP21_24HR_POL2_RX']
     makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
 
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
-    names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    names_list = ['SHEP21_0HR_POL2_RX','SHEP21_2HR_POL2_RX','SHEP21_24HR_POL2_RX']
     makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+
 
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    names_list = ['SHEP21_0HR_POL2_RX','SHEP21_2HR_POL2_RX','SHEP21_24HR_POL2_RX']
     makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
+
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
-    names_list = ['SHEP21_0HR_MYCN_RX','SHEP21_2HR_MYCN_RX','SHEP21_24HR_MYCN_RX']
+    names_list = ['SHEP21_0HR_POL2_RX','SHEP21_2HR_POL2_RX','SHEP21_24HR_POL2_RX']
     makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
     #=============================================================================
-    #for nb mycn chip no spike
-    set_name = 'MYCN_NOSPIKE'
+    #for nb RNA Pol II chiprx 
+    set_name = 'POL2_NOSPIKE'
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    names_list = ['SHEP21_0HR_POL2_NOSPIKE','SHEP21_2HR_POL2_NOSPIKE','SHEP21_24HR_POL2_NOSPIKE']
     makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
-    names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
-    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
-    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
-    names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
-    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-
-
-    #=============================================================================
-    #for nb h3k27ac chiprx 
-    set_name = 'H3K27AC_CHIPRX'
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
-    names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
-
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
-
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
-    names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
-
-
-    #=============================================================================
-    #for nb H3K27ac chip no spike
-    set_name = 'H3K27AC_NOSPIKE'
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
-    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
-    names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
-    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
-    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
-    names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
+    names_list = ['SHEP21_0HR_POL2_NOSPIKE','SHEP21_2HR_POL2_NOSPIKE','SHEP21_24HR_POL2_NOSPIKE']
     makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
 
 
-    #=============================================================================
-    #for nb ctcf chiprx 
-    set_name = 'CTCF_CHIPRX'
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
-
-
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
-    names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
-
-
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+    names_list = ['SHEP21_0HR_POL2_NOSPIKE','SHEP21_2HR_POL2_NOSPIKE','SHEP21_24HR_POL2_NOSPIKE']
+    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
 
 
     gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
-    names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+    names_list = ['SHEP21_0HR_POL2_NOSPIKE','SHEP21_2HR_POL2_NOSPIKE','SHEP21_24HR_POL2_NOSPIKE']
+    makeBoxPlot(shep21_dataFile,set_name,gff_name,names_list)
 
 
 
-    #=============================================================================
-    #for nb h3k4me3 chiprx 
-    set_name = 'H3K4ME3_CHIPRX'
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+    # #=============================================================================
+    # #for nb h3k4me3 chiprx 
+    # set_name = 'H3K4ME3_CHIPRX'
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
-    names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-0_+0'
+    # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
-    names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-1kb_+1kb'
+    # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
-    gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
-    names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
-    makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
+    # gff_name = 'SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-0_+0'
+    # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX']
+    # makeBoxPlot(shep21_chiprx_dataFile,set_name,gff_name,names_list)
 
 
 

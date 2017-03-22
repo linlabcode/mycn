@@ -211,7 +211,7 @@ mapped_table_3 = read.delim(mapped_path_list[3])
 
 #plot a meta for both scaled and non scaled data
 
-plot_path = paste(projectFolder,'figures/5_',region_title,'_',plot_name,'_metas.pdf',sep='')
+plot_path = paste(projectFolder,'figures/5_chiprx_heatmaps/5_',region_title,'_',plot_name,'_metas.pdf',sep='')
 print(plot_path)
 pdf(file=plot_path,width = 8,height = 6)
 
@@ -223,11 +223,11 @@ dev.off()
 #========================MAKING HEATMAPS===========================
 #==================================================================
 
-plot_path = paste(projectFolder,'figures/5_',region_title,'_',plot_name,'_scaled_heat.png',sep='')
+plot_path = paste(projectFolder,'figures/5_chiprx_heatmaps/5_',region_title,'_',plot_name,'_scaled_heat.png',sep='')
 print(plot_path)
 plotHeatmaps(mapped_table_1,mapped_table_2,mapped_table_3,scale_table,plot_color,plot_path,sample_names,rpm,scale_data = TRUE)
 
-plot_path = paste(projectFolder,'figures/5_',region_title,'_',plot_name,'_unscaled_heat.png',sep='')
+plot_path = paste(projectFolder,'figures/5_chiprx_heatmaps/5_',region_title,'_',plot_name,'_unscaled_heat.png',sep='')
 print(plot_path)
 plotHeatmaps(mapped_table_1,mapped_table_2,mapped_table_3,scale_table,plot_color,plot_path,sample_names,rpm,scale_data = FALSE)
 

@@ -40,7 +40,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/src/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -64,7 +64,7 @@ genome ='mm9'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/thmycn/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/thmycn/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 projectFolder = utils.formatFolder(projectFolder,True)
 #standard folder names
 gffFolder ='%sgff_mm9/' % (projectFolder)
@@ -171,63 +171,46 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #for SCG_H3K27AC
-    analysisName = 'SCG_H3K27AC'
-    namesList = ['SCG_H3K27Ac']
-    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+    # #for SCG_H3K27AC
+    # analysisName = 'SCG_H3K27AC'
+    # namesList = ['SCG_H3K27Ac']
+    # bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
 
 
-    #for CG_H3K27AC
-    analysisName = 'CG_H3K27AC'
-    namesList = ['CG_H3K27Ac']
-    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+    # #for CG_H3K27AC
+    # analysisName = 'CG_H3K27AC'
+    # namesList = ['CG_H3K27Ac']
+    # bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
 
 
-    #for GANGLIA_H3K27AC
-    analysisName = 'GANGLIA_H3K27AC'
-    namesList = ['CG_H3K27Ac','SCG_H3K27Ac']
-    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+    # #for GANGLIA_H3K27AC
+    # analysisName = 'GANGLIA_H3K27AC'
+    # namesList = ['CG_H3K27Ac','SCG_H3K27Ac']
+    # bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
 
-    #for THMYCN
-    analysisName = 'THMYCN_H3K27AC'
-    namesList = ['THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac','THMYCN1_H3K27Ac']
-    bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+    # #for THMYCN
+    # analysisName = 'THMYCN_H3K27AC'
+    # namesList = ['THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac','THMYCN1_H3K27Ac']
+    # bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
+
 
 
     print('\n\n')
     print('#======================================================================')
-    print('#======================VII. MAPPING TO REGIONS=========================')
+    print('#========================IV. RUNNING DYNAMIC===========================')
     print('#======================================================================')
     print('\n\n')
 
-    # #mapping ctcf to ctcf regions
-    # gffList = ['%sHG19_SHEP21_CTCF_RX_UNION_-0_+0.gff' % (gffFolder), '%sHG19_SHEP21_CTCF_RX_INTERSECT_-0_+0.gff' % (gffFolder)]
-    # names_list = ['SHEP21_0HR_CTCF_RX','SHEP21_2HR_CTCF_RX','SHEP21_24HR_CTCF_RX','SHEP21_0HR_INPUT_RX_2','SHEP21_2HR_INPUT_RX_2','SHEP21_24HR_INPUT_RX_2']
-    # map_regions(shep21_chiprx_dataFile,gffList,names_list)
-
-    # #mapping h3k4me3 to h3k4me3 regions
-    # gffList = ['%sHG19_SHEP21_H3K4ME3_RX_UNION_-0_+0.gff' % (gffFolder), '%sHG19_SHEP21_H3K4ME3_RX_INTERSECT_-0_+0.gff' % (gffFolder)]
-    # names_list = ['SHEP21_0HR_H3K4ME3_RX','SHEP21_2HR_H3K4ME3_RX','SHEP21_24HR_H3K4ME3_RX','SHEP21_0HR_INPUT_RX_2','SHEP21_2HR_INPUT_RX_2','SHEP21_24HR_INPUT_RX_2']
-    # map_regions(shep21_chiprx_dataFile,gffList,names_list)
-    
-    # #mapping everybody to active TSS locations
-    # gffList = ['%sHG19_TSS_NB_H3K27AC_ACTIVE_UNION_-1000_+1000.gff' % (gffFolder)]
-    # map_regions(shep21_chiprx_dataFile,gffList,names_list=[])
-
-
-    # #mapping everybody to mycn peaks
-    # gffList = ['%sHG19_TSS_NB_H3K27AC_ACTIVE_UNION_-1000_+1000.gff' % (gffFolder)]
-    # gffList = ['%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder),
-    #            '%sHG19_NB_MYCN_CONSERVED_-500_+500.gff' % (gffFolder),
-    #            '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-0_+0.gff' % (gffFolder),
-    #            '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-500_+500.gff' % (gffFolder),
-    #            '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-0_+0.gff' % (gffFolder),
-    #            '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-500_+500.gff' % (gffFolder),
-    #            ]
-    # map_regions(shep21_chiprx_dataFile,gffList,names_list=[])
-
-
-
+    dynamic_meta_folder = utils.formatFolder('%sdynamic_meta_mm9' %(projectFolder),True)
+    #wrapping dynamic
+    meta_rose_1 = '%sGANGLIA_H3K27AC/' %  (metaRoseFolder)
+    meta_rose_2 = '%sTHMYCN_H3K27AC/' %  (metaRoseFolder)
+    group1_names = ['CG_H3K27Ac','SCG_H3K27Ac']
+    group2_names = ['THMYCN1_H3K27Ac','THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac']
+    output_folder = utils.formatFolder('%sGANGLIA_THMYCN_SE/' % (dynamic_meta_folder),True)
+    name_1 = 'GANGLIA'
+    name_2 = 'THMYCN'
+    wrap_dynamic_meta(mouse_dataFile,meta_rose_1,meta_rose_2,output_folder,group1_names,group2_names,name_1,name_2)
 
 
 #==========================================================================
@@ -549,7 +532,7 @@ def make_mycn_gffs(mycn_stats_path,window=0):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~MAPPING CHIPRX TO REGIONS~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAPPING TO REGIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -586,6 +569,33 @@ def map_regions(nb_all_chip_dataFile,gffList,names_list=[]):
         pipeline_dfci.makeSignalTable(nb_all_chip_dataFile,gffFile,mappedFolder,namesList = names_list,medianNorm=False,output =signal_table_path)
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~WRAPPING DYNAMIC ENHANCER META~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+def wrap_dynamic_meta(mouse_dataFile,meta_rose_1,meta_rose_2,output_folder,group1_names,group2_names,name_1,name_2):
+    
+    '''
+    wraps the dynamic meta enhancer analysis
+    '''
+    
+    output_folder = utils.formatFolder(output_folder,True)
+    group1_string = ','.join(group1_names)
+    group2_string = ','.join(group2_names)
+
+    bash_path = '%s%s_%s_dynamic.sh' % (output_folder,name_1,name_2)
+    bash_file = open(bash_path,'w')
+    bash_file.write('#!/usr/bin/bash\n\n\n')
+
+    bash_file.write('cd %s\n\n' % (projectFolder))
+    cmd = 'srun --mem 16000 python %sdynamicEnhancer_meta.py -g MM9 -d %s -r %s,%s -o %s --group1 %s --group2 %s --name1 %s --name2 %s' % (pipeline_dir,mouse_dataFile,meta_rose_1,meta_rose_2,output_folder,group1_string,group2_string,name_1,name_2)
+
+    print(cmd)
+    bash_file.write(cmd)
+    
+    bash_file.close()
+    print(bash_path)
 
 #==========================================================================
 #==================================THE END=================================

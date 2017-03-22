@@ -39,7 +39,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -63,7 +63,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -87,7 +87,7 @@ maskFolder = '%smasks/' % (projectFolder)
 maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder,maskFolder]
@@ -160,18 +160,18 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #for enhancers
-    enhancer_bashFileName,enhancer_region_map_path,namesList = define_enhancer_landscape(projectFolder,pipeline_dir,shep_on_dataFile)
-    print(enhancer_bashFileName)
-    #runs only if no output detected
-    if not utils.checkOutput(enhancer_region_map_path,0,0):
-        print(enhancer_bashFileName)
-        os.system('bash %s' % (enhancer_bashFileName))
+    # #for enhancers
+    # enhancer_bashFileName,enhancer_region_map_path,namesList = define_enhancer_landscape(projectFolder,pipeline_dir,shep_on_dataFile)
+    # print(enhancer_bashFileName)
+    # #runs only if no output detected
+    # if not utils.checkOutput(enhancer_region_map_path,0,0):
+    #     print(enhancer_bashFileName)
+    #     os.system('bash %s' % (enhancer_bashFileName))
 
 
-    #in individual systems
-    bash_path = map_shep_enhancers(shep_on_dataFile)
-    #os.system('bash %s' % (bash_path))
+    # #in individual systems
+    # bash_path = map_shep_enhancers(shep_on_dataFile)
+    # #os.system('bash %s' % (bash_path))
 
 
     print('\n\n')
@@ -180,12 +180,12 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #for mycn
-    myc_bashFileName,myc_region_map_path,namesList = define_myc_landscape(projectFolder,pipeline_dir,shep_on_dataFile)
+    # #for mycn
+    # myc_bashFileName,myc_region_map_path,namesList = define_myc_landscape(projectFolder,pipeline_dir,shep_on_dataFile)
 
-    if not utils.checkOutput(myc_region_map_path,0,0):
-        print(myc_bashFileName)
-        os.system('bash %s' % (myc_bashFileName))
+    # if not utils.checkOutput(myc_region_map_path,0,0):
+    #     print(myc_bashFileName)
+    #     os.system('bash %s' % (myc_bashFileName))
 
 
 
@@ -237,10 +237,25 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
+    # #==========================================
+    # #for shep mycn at shep mycn defined sites
+    # plot_name = 'SHEP_MYCN'
+    # names_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    # gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP_MYCN_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP_MYCN_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP_MYCN_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
+    #             ]
+    # plot_color = 'red'
+    # makeHeatmap(names_list,gff_list,plot_name,plot_color)
+
+
     #==========================================
     #for shep mycn at shep mycn defined sites
-    plot_name = 'SHEP_MYCN'
-    names_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    plot_name = 'SHEP_H3K27AC'
+    names_list = ['SHEP_0HR_H3K27AC','SHEP_2HR_H3K27AC','SHEP_6HR_H3K27AC']
     gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
                 '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
                 '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
@@ -248,8 +263,12 @@ def main():
                 '%sHG19_SHEP_MYCN_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
                 '%sHG19_SHEP_MYCN_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
                 ]
-    plot_color = 'red'
+    plot_color = 'blue'
     makeHeatmap(names_list,gff_list,plot_name,plot_color)
+
+
+
+
 
     # #for shep21 mycn regular chip
     # plot_name = 'SHEP21_MYCN_NOSPIKE'

@@ -315,7 +315,7 @@ exp_raw_matrix = makeExpMatrix(gene_table,exp_raw_table,group_names,cut=10)
 #==================================================================
 
 
-pdf_path = paste(projectFolder,'figures/6_mRNA_',analysis_name,'_n',as.character(nBins),'_top_',as.character(top_count),'.pdf',sep='')
+pdf_path = paste(projectFolder,'figures/6_rna_line_plots/6_mRNA_',analysis_name,'_n',as.character(nBins),'_top_',as.character(top_count),'.pdf',sep='')
 
 pdf(file=pdf_path,width = 8,height =6)
 #for the normalized by promoter,enhancer,total

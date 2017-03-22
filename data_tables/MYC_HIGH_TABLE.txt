@@ -1,0 +1,9 @@
+FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	FASTQ_FILE
+./bam/hg19/	20120522_526	hg19	H2171_INPUT	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444476/SRR444476.sra
+./bam/hg19/	20120522_525	hg19	H2171_MYC	H2171_INPUT		H2171_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444473/SRR444473.sra
+./bam/hg19/	20120522_518	hg19	P493-6_T24_MYC	P493-6_T24_WCE		P493-6_T24_MYC_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444429/SRR444429.sra
+./bam/hg19/	20120522_529	hg19	P493-6_T24_WCE	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444466/SRR444466.sra
+./bam/hg19/	20120522_530	hg19	MM1S_MYC_DMSO	MM1S_WCE_DMSO		MM1S_MYC_DMSO_peaks.bed	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444479/SRR444479.sra
+./bam/hg19/	20120522_531	hg19	MM1S_WCE_DMSO	NONE		NONE	0,0,0	ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/SRR/SRR444/SRR444481/SRR444481.sra
+./bam/hg19/	20120522_521	hg19	U87_MYC	U87_WCE		U87_MYC_peaks.bed	0,0,0	NA
+./bam/hg19/	20120522_522	hg19	U87_WCE	NONE	NONE	NONE	0,0,0	NA

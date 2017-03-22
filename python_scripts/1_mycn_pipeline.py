@@ -47,7 +47,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/src/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -70,7 +70,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -193,12 +193,12 @@ def main():
     print('\n\n')
 
     
-    #here we will identify active promoters in various contexts as those with 
-    #an H3K27AC peak in the +/- 1kb tss region
-    #UCSC refseq annotations are used for all genes
-    #make_nb_active_gene_lists(nb_all_chip_dataFile)
+    # #here we will identify active promoters in various contexts as those with 
+    # #an H3K27AC peak in the +/- 1kb tss region
+    # #UCSC refseq annotations are used for all genes
+    # #make_nb_active_gene_lists(nb_all_chip_dataFile)
     
-    make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile,u87_dataFile)
+    # make_active_gene_lists(mm1s_dataFile,p4936_young_dataFile,sclc_dataFile,shep_on_dataFile,u87_dataFile)
 
     print('\n\n')
     print('#======================================================================')
@@ -206,36 +206,36 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    #for enhancers
-    enhancer_bashFileName,enhancer_region_map_path,namesList = define_enhancer_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
+    # #for enhancers
+    # enhancer_bashFileName,enhancer_region_map_path,namesList = define_enhancer_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
 
-    #runs only if no output detected
-    if not utils.checkOutput(enhancer_region_map_path,0,0):
-        print(enhancer_bashFileName)
-        os.system('bash %s' % (enhancer_bashFileName))
+    # #runs only if no output detected
+    # if not utils.checkOutput(enhancer_region_map_path,0,0):
+    #     print(enhancer_bashFileName)
+    #     os.system('bash %s' % (enhancer_bashFileName))
 
 
-    #for mycn
-    mycn_bashFileName,mycn_region_map_path,namesList = define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
+    # #for mycn
+    # mycn_bashFileName,mycn_region_map_path,namesList = define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile)
 
-    if not utils.checkOutput(mycn_region_map_path,0,0):
-        print(mycn_bashFileName)
-        os.system('bash %s' % (mycn_bashFileName))
+    # if not utils.checkOutput(mycn_region_map_path,0,0):
+    #     print(mycn_bashFileName)
+    #     os.system('bash %s' % (mycn_bashFileName))
     
-    #now we need to call the R script that creates the rank plots
-    if utils.checkOutput(mycn_region_map_path,1,30): #set a wait time for 30 minutes
-        print('Found NB_MYCN meta_rose landscape and running rank plot R code')
+    # #now we need to call the R script that creates the rank plots
+    # if utils.checkOutput(mycn_region_map_path,1,30): #set a wait time for 30 minutes
+    #     print('Found NB_MYCN meta_rose landscape and running rank plot R code')
 
-        conserved_rank_path = '%smeta_rose/NB_MYCN/NB_MYCN_0KB_STITCHED_ENHANCER_REGION_RANK_CONSERVED.txt' % (projectFolder)
-        if utils.checkOutput(conserved_rank_path,0,0):
-            print('Identified NB rank conserved regions: %s' % (conserved_rank_path))
-        else:
-            print('Defining NB rank conserved regions')
-            name_string = ','.join(namesList) #provides the dataset names used
-            rank_script_path = '%sr_scripts/1_nb_mycn_rank.R' % (projectFolder)
-            r_cmd = 'Rscript %s %s %s %s' % (rank_script_path,mycn_region_map_path,name_string,projectFolder)
-            print(r_cmd)
-            os.system(r_cmd)
+    #     conserved_rank_path = '%smeta_rose/NB_MYCN/NB_MYCN_0KB_STITCHED_ENHANCER_REGION_RANK_CONSERVED.txt' % (projectFolder)
+    #     if utils.checkOutput(conserved_rank_path,0,0):
+    #         print('Identified NB rank conserved regions: %s' % (conserved_rank_path))
+    #     else:
+    #         print('Defining NB rank conserved regions')
+    #         name_string = ','.join(namesList) #provides the dataset names used
+    #         rank_script_path = '%sr_scripts/1_nb_mycn_rank.R' % (projectFolder)
+    #         r_cmd = 'Rscript %s %s %s %s' % (rank_script_path,mycn_region_map_path,name_string,projectFolder)
+    #         print(r_cmd)
+    #         os.system(r_cmd)
 
 
     print('\n\n')
@@ -243,15 +243,16 @@ def main():
     print('#==========V. MAPPING MYCN AND H3K27AC TO MYCN REGIONS=================')
     print('#======================================================================')
     print('\n\n')
-    #here we will first make a gff of conserved NB MYCN regions
-    #and then map MYCN and H3K27ac signal 
 
-    print('Making a gff and bed of conserved NB MYCN regions:')
-    mycn_gff_path,mycn_flank_gff_path = make_mycn_regions(conserved_rank_path) 
+    # #here we will first make a gff of conserved NB MYCN regions
+    # #and then map MYCN and H3K27ac signal 
+
+    # print('Making a gff and bed of conserved NB MYCN regions:')
+    # mycn_gff_path,mycn_flank_gff_path = make_mycn_regions(conserved_rank_path) 
     
-    print('Mapping MYCN and H3K27AC signal')
-    gffList = [mycn_gff_path,mycn_flank_gff_path]
-    map_mycn_regions(nb_all_chip_dataFile,gffList)
+    # print('Mapping MYCN and H3K27AC signal')
+    # gffList = [mycn_gff_path,mycn_flank_gff_path]
+    # pipeline_dfci.map_regions(nb_all_chip_dataFile,gffList)
 
     print('\n\n')
     print('#======================================================================')
@@ -260,12 +261,12 @@ def main():
     print('\n\n')
     
 
-    mycn_table_path = '%stables/HG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (projectFolder)
-    if utils.checkOutput(mycn_table_path,0,0):
-        print('Identified MYCN table %s' % (mycn_table_path))
-    else:
-        print('Making MYCN stats table')        
-        mycn_table_path = make_mycn_stats_table(nb_all_chip_dataFile,mycn_table_path)
+    # mycn_table_path = '%stables/HG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (projectFolder)
+    # if utils.checkOutput(mycn_table_path,0,0):
+    #     print('Identified MYCN table %s' % (mycn_table_path))
+    # else:
+    #     print('Making MYCN stats table')        
+    #     mycn_table_path = make_mycn_stats_table(nb_all_chip_dataFile,mycn_table_path)
 
     print('\n\n')
     print('#======================================================================')
@@ -273,10 +274,10 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
-    r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
-    print(r_cmd)
-    os.system(r_cmd)
+    # compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
+    # r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
+    # print(r_cmd)
+    # os.system(r_cmd)
 
 
     print('\n\n')
@@ -285,18 +286,26 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    mycn_gff_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
-    ebox_rank_path = rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,window = 100)
+    # mycn_gff_path = '%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder)
+    # ebox_rank_path = rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,window = 100)
     
-    print(ebox_rank_path)
+    # print(ebox_rank_path)
 
-    #now make the heatmap
-    ebox_heatmap_script_path = '%sr_scripts/3_nb_ebox_heatmap.R' % (projectFolder)
-    r_cmd = 'Rscript %s %s %s' % (ebox_heatmap_script_path,ebox_rank_path,projectFolder)
-    print(r_cmd)
-    os.system(r_cmd)
+    # #now make the heatmap
+    # ebox_heatmap_script_path = '%sr_scripts/3_nb_ebox_heatmap.R' % (projectFolder)
+    # r_cmd = 'Rscript %s %s %s' % (ebox_heatmap_script_path,ebox_rank_path,projectFolder)
+    # print(r_cmd)
+    # os.system(r_cmd)
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#====================IX. MAPPING BE2C DATASETS TO TSS==================')
+    print('#======================================================================')
+    print('\n\n')
+
+    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    be2c_signal_path = pipeline_dfci.map_regions(be2c_dataFile,gffList,mappedFolder,signalFolder,[],False)
     
-
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
 #==========================================================================
@@ -642,38 +651,7 @@ def make_mycn_regions(conserved_rank_path):
     print(mycn_flank_bed_path)
     return mycn_gff_path,mycn_flank_gff_path
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~MAPPING MYCN AND H3K27AC TO MYCN REGIONS~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def map_mycn_regions(nb_all_chip_dataFile,gffList):
-
-    '''
-    making a normalized MYCN and H3K27AC binding signal table at all regions
-    '''
-
-    #since each bam has different read lengths, important to carefully normalize quantification
-    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
-
-    names_list = dataDict.keys()
-    names_list.sort()
-    
-    for name in names_list:
-        bam = utils.Bam(dataDict[name]['bam'])
-        read_length = bam.getReadLengths()[0]
-        bam_extension = 200-read_length
-        print('For dataset %s using an extension of %s' % (name,bam_extension))
-        pipeline_dfci.mapBamsBatch(nb_all_chip_dataFile,gffList,mappedFolder,overWrite =False,namesList = [name],extension=bam_extension,rpm=True)
-
-        
-
-    #want a signal table of all datasets to each gff
-    print('Writing signal tables for each gff:')
-    for gffFile in gffList:
-        gffName = gffFile.split('/')[-1].split('.')[0]
-        signal_table_path = '%s%s_SIGNAL.txt' % (signalFolder,gffName)
-        print(signal_table_path)
-        pipeline_dfci.makeSignalTable(nb_all_chip_dataFile,gffFile,mappedFolder,namesList = names_list,medianNorm=False,output =signal_table_path)
 
 
 
@@ -959,9 +937,7 @@ def rank_eboxes(nb_all_chip_dataFile,mycn_gff_path,macsFolder,genomeDirectory,wi
     #this is borrowed from above and maps chip-seq signal to the gff
     print('mapping to nb mycn summits and making signal dict')
     gffList = [summit_gff_path]
-    map_mycn_regions(nb_all_chip_dataFile,gffList)
-
-    summit_signal_path = '%sHG19_NB_MYCN_SUMMITS_-%s_+%s_SIGNAL.txt' % (signalFolder,window,window)
+    summit_signal_path = pipeline_dfci.map_regions(nb_all_chip_dataFile,gffList)
 
 
     mycnSignalTable = utils.parseTable(summit_signal_path,'\t')
