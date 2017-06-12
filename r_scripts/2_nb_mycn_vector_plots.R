@@ -181,4 +181,75 @@ name2 = 'NON CANON EBOX PER KB'
 title = 'NONCANONICAL EBOX DENSITY as a function of MYCN RANK at MYCN bound regions'
 compareVectors(v1,v2,name1,name2,title,'black',nBins = 50,nIter = 100,yMin = 3,yMax=7)
 
+#for GC
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$GC_FREQ
+name1 = 'MYCN RANK'
+name2 = 'GC fraction'
+
+title = 'GC FRACTION as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'black',nBins = 50,nIter = 100,yMin = 0,yMax=0.3)
+
+
+#for GABPA
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$GABPA_COUNT/mycn_table$LENGTH * 1000
+name1 = 'MYCN RANK'
+name2 = 'GABPA MOTIFS PER KB'
+
+title = 'GABPA MOTIF DENSITY as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'red',nBins = 50,nIter = 100,yMin = 0,yMax=1.2)
+
+#for GATA
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$GATA_COUNT/mycn_table$LENGTH * 1000
+name1 = 'MYCN RANK'
+name2 = 'GATA MOTIFS PER KB'
+
+title = 'GATA MOTIF DENSITY as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'blue',nBins = 50,nIter = 100,yMin = 0,yMax=2)
+
+
+
+#for CANON enrichment
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$CANON_EBOX_COUNT/(mycn_table$CANON_EXP+0.01)
+name1 = 'MYCN RANK'
+name2 = 'CANONICAL E-BOX FOLD ENRICHMENT'
+
+title = 'CANONICAL E-Box enrichment as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'red',nBins = 50,nIter = 100,yMin = 0,yMax=20)
+
+
+#for NONCANON enrichment
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$NONCANON_EBOX_COUNT/(mycn_table$NON_CANON_EXP+0.01)
+name1 = 'MYCN RANK'
+name2 = 'NON-CANONICAL E-BOX FOLD ENRICHMENT'
+
+title = 'NON-CANONICAL E-Box enrichment as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'black',nBins = 50,nIter = 100,yMin = 0,yMax=5)
+
+
+#for GABP enrichment
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$GABPA_COUNT/(mycn_table$GABPA_EXP+0.01)
+name1 = 'MYCN RANK'
+name2 = 'GABPA FOLD ENRICHMENT'
+
+title = 'GABPA motif enrichment as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'red',nBins = 50,nIter = 100,yMin = 0,yMax=2)
+
+
+#for GATA enrichment
+v1 = mycn_table$MYCN_RANK
+v2 = mycn_table$GATA_COUNT/(mycn_table$GATA_EXP+0.01)
+name1 = 'MYCN RANK'
+name2 = 'GATA FOLD ENRICHMENT'
+
+title = 'GATA motif enrichment as a function of MYCN RANK at MYCN bound regions'
+compareVectors(v1,v2,name1,name2,title,'blue',nBins = 50,nIter = 100,yMin = 0,yMax=2)
+
+
+
 dev.off()

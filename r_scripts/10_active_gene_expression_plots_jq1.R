@@ -1,9 +1,6 @@
 
 setwd('~/Dropbox/mycn_cyl')
-library(ggplot2)
-library(scatterplot3d)
-library(rgl)
-library(gplots)
+
 
 #=========================================================
 #========================HELPER FUNCTIONS=================
@@ -59,13 +56,15 @@ getExpRows <- function(expTable,geneList,cut=10){
 plotGene <- function(fullExpTable,gene,color){
 	
 	
-	timePoints = c(0,2,4,6,8,16,24)
+	timePoints = c(0,4,8,24)
 	gene_index= which(rownames(fullExpTable)==gene) 
 	
-	meanVector = c(mean(as.numeric(fullExpTable[gene_index,c(1,2)])))
-	sdVector = c(sd(as.numeric(fullExpTable[gene_index,c(1,2)])))
-	
-	for(i in seq(3,18,3)){
+	meanVector = c(mean(as.numeric(fullExpTable[gene_index,c(1,2,3)])))
+	sdVector = c(sd(as.numeric(fullExpTable[gene_index,c(1,2,3)])))
+
+	meanVector = c(meanVector ,mean(as.numeric(fullExpTable[gene_index,c(4,5)])))
+	sdVector = c(sdVector ,sd(as.numeric(fullExpTable[gene_index,c(4,5)])))	
+	for(i in seq(6,9,3)){
 		expMean = mean(as.numeric(fullExpTable[gene_index,i:(i+2)]))
 		expSD = sd(as.numeric(fullExpTable[gene_index,i:(i+2)]))
 		
@@ -73,13 +72,15 @@ plotGene <- function(fullExpTable,gene,color){
 		sdVector = c(sdVector,expSD)
 
 	}
-	maxIndex = which.max(meanVector)
-	yMax = 1.1*(meanVector[maxIndex] + sdVector[maxIndex])
+	#maxIndex = which.max(meanVector)
+	yMax = 1.2*max(meanVector+sdVector)
+	#yMax = 1.1*(meanVector[maxIndex] + sdVector[maxIndex])
 	
-	minIndex = which.min(meanVector)
-	yMin = .6*(meanVector[minIndex] - sdVector[minIndex])
+	#minIndex = which.min(meanVector)
+	#yMin = .6*(meanVector[minIndex] - sdVector[minIndex])
+	yMin = 0.6*min(meanVector-sdVector)
 
-	plot(timePoints,meanVector,type='b',ylim =c(yMin,yMax),ylab='Cell count normalized fpkm',main=gene,xlab='Hours after MYCN shutdown',cex=0,lwd=2,col=color)
+	plot(timePoints,meanVector,type='b',ylim =c(yMin,yMax),ylab='Cell count normalized fpkm',main=gene,xlab='Hours after JQ1 treatment',cex=0,lwd=2,col=color)
 	
 	error.bar(timePoints,meanVector,sdVector,length =0.01,col=color,lwd=2)	
 
@@ -92,9 +93,9 @@ plotGene <- function(fullExpTable,gene,color){
 plotFoldGenes <- function(foldExpTable,gene_list,color_vector,yMin,yMax){
 	
 	
-	timePoints = c(0,2,4,6,8,16,24)
+	timePoints = c(0,4,8,24)
 	
-	plot(0,0,xlim=c(0,max(timePoints)),ylim = c(yMin,yMax),ylab='Cell count normalized fpkm',main=gene,xlab='Hours after MYCN shutdown',cex=0,xaxt='n')
+	plot(0,0,xlim=c(0,max(timePoints)),ylim = c(yMin,yMax),ylab='Cell count normalized fpkm',main=gene,xlab='Hours after JQ1 treatment',cex=0,xaxt='n')
 	axis(1,timePoints,timePoints)
 	legend(0,0.5,gene_list,col=color_vector,lwd=2)
 	for(i in 1:length(gene_list)){
@@ -133,13 +134,12 @@ transcribedGeneList = as.character(transcribedTable[,3])
 #let's just look at the top N mycn peaks
 
 #mean expression w/ replicate removed across all timepoints
-expTable = read.delim('./expression/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_means.txt',header=TRUE)
+expTable = read.delim('./expression/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_means.txt',header=TRUE)
 
-#normExpTable = read.delim('./expression/SHEP21_all_fpkm_exprs_norm.txt',header=TRUE,sep='\t')
-normExpTable = read.delim('./expression/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_exprs_norm.txt',sep='\t')
+normExpTable = read.delim('./expression/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_norm.txt',sep='\t')
 fullNormExpTable = normExpTable[,seq(1,ncol(normExpTable))]
 
-rawExpTable = read.delim('./expression/shep21_cufflinks_no_rep2/SHEP21_cuffnorm/output/SHEP21_all_fpkm_exprs_raw.txt',sep='\t')
+rawExpTable = read.delim('./expression/BE2C_DRUG_cuffnorm/output/BE2C_DRUG_all_fpkm_exprs_raw.txt',sep='\t')
 fullRawExpTable = rawExpTable[,seq(1,ncol(rawExpTable))]
 
 #converting this into a proper matrix
@@ -153,8 +153,8 @@ transcribedExpMatrix = makeExpMatrix(expTable,transcribedGeneList,10)
 
 
 
-rawExpMatrix = matrix(nrow= nrow(fullRawExpTable),ncol=7)
-timePoints = c('0HR','2HR','4HR','6HR','8HR','16HR','24HR')
+rawExpMatrix = matrix(nrow= nrow(fullRawExpTable),ncol=4)
+timePoints = c('DMSO','4HR','8HR','24HR')
 for(i in 1:length(timePoints)){
 	
 	cols = grep(as.character(timePoints[i]),as.character(colnames(fullRawExpTable)))
@@ -173,7 +173,7 @@ transcribedRawExpMatrix = rawExpMatrix[exp_rows,]
 
 
 
-pdf(file='./figures/170304_nb_mycn_expression_examples_norm.pdf',width = 5,height =4)
+pdf(file='./figures/170328_be2c_jq1_expression_examples_norm.pdf',width = 5,height =4)
 plotGene(fullNormExpTable,'HAND2','red')
 plotGene(fullNormExpTable,'TWIST1','red')
 plotGene(fullNormExpTable,'CDK4','red')
@@ -185,7 +185,7 @@ plotGene(fullNormExpTable,'RPL22','red')
 dev.off()
 
 
-pdf(file='./figures/170304_nb_mycn_expression_examples_raw.pdf',width = 5,height =4)
+pdf(file='./figures/170328_be2c_jq1_expression_examples_raw.pdf',width = 5,height =4)
 plotGene(fullRawExpTable,'HAND2','red')
 plotGene(fullRawExpTable,'TWIST1','red')
 plotGene(fullRawExpTable,'CDK4','red')
@@ -222,19 +222,20 @@ dev.off()
 #==================FOLD MATRIX BOX=======================
 #========================================================
 
-pdf(file='./figures/170304_shep21_expression_box_norm.pdf',width = 6,height = 5)
+pdf(file='./figures/170328_be2c_jq1_expression_box_norm.pdf',width = 6,height = 5)
 foldMatrix = log2(transcribedExpMatrix/transcribedExpMatrix[,1])
 binaryMatrix = apply(foldMatrix,2,is.finite)
 finite_rows = which(apply(binaryMatrix,1,min)>0)
-boxplot(foldMatrix[finite_rows,2:7],cex=0,ylim=c(-1.8,1.3),ylab='Expression log2 fold change vs. 0hr',main ='active genes n=8,043')
+boxplot(foldMatrix[finite_rows,2:4],cex=0,ylim=c(-1.8,1.3),ylab='Expression log2 fold change vs. 0hr',main ='active genes n=8,043')
 abline(h=0)
 dev.off()
 
 
-pdf(file='./figures/170304_shep21_expression_box_raw.pdf',width = 6,height = 5)
+pdf(file='./figures/170328_be2c_jq1_expression_box_raw.pdf',width = 6,height = 5)
 foldMatrix = log2(transcribedRawExpMatrix/transcribedRawExpMatrix[,1])
+
 binaryMatrix = apply(foldMatrix,2,is.finite)
 finite_rows = which(apply(binaryMatrix,1,min)>0)
-boxplot(foldMatrix[finite_rows,2:7],cex=0,ylim=c(-1.8,1.3),ylab='Expression log2 fold change vs. 0hr',main ='active genes n=8,043')
+boxplot(foldMatrix[finite_rows,2:4],cex=0,ylim=c(-1.8,1.3),ylab='Expression log2 fold change vs. 0hr',main ='active genes n=8,043')
 abline(h=0)
 dev.off()

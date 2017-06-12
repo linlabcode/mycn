@@ -72,7 +72,7 @@ compareVectors <- function(v1,v2,name1,name2,title,nBins = 100,nIter = 1000,yMin
 	#first one as a line graph
 	
 	v1Order = order(v1)
-	colorSpectrum <- colorRampPalette(c("green","black","black","red"))(100)
+	colorSpectrum <- colorRampPalette(c("blue","black","red"))(100)
 
 	#setting a color data range
 	minValue <- -2
@@ -139,7 +139,7 @@ compareVectors <- function(v1,v2,name1,name2,title,nBins = 100,nIter = 1000,yMin
 	
 	x=1:nBins
 	lw1 = loess(meanVector~x)
-	lines(x,lw1$fitted,col='blue',lwd=2)
+	lines(x,lw1$fitted,col='orange',lwd=2)
 	
 	}
 
@@ -154,54 +154,46 @@ compareVectors <- function(v1,v2,name1,name2,title,nBins = 100,nIter = 1000,yMin
 #==================SAMPLE PARAMTERS FOR DEBUGGING==================
 #==================================================================
 
-setwd('/Volumes/grail/projects/mycn_resub/mycn/')
-twist_signal_path = './signalTables/HG19_SHEP21_TWIST1_RANK_SHEP21_TABLE_SIGNAL.txt'
+setwd('~/Dropbox/mycn_cyl/')
+twist_signal_path = './signalTables/HG19_SHEP21_0HR_TWIST_MYCN_INTERSECTION_-0_+0_SHEP21_TABLE_SIGNAL.txt'
 
-rank_path = './dynamic_rose/SHEP21_TWIST1/output/HG19_SHEP21_0HR_TWIST_SHEP21_24HR_B_TWIST_merged_MERGED_ENHANCERS_RANK_TABLE.txt'
 
 #==================================================================
 #========================DATA INPUT================================
 #==================================================================
 
-rank_table = read.delim(rank_path,sep='\t')
 
 twist_table = read.delim(twist_signal_path,sep='\t')
+twist_rows = which(apply(twist_table[,3:ncol(twist_table)],1,min) > 0)
+twist_table = twist_table[twist_rows,]
+twist_fold = log2(twist_table$SHEP21_2HR_TWIST/median(twist_table$SHEP21_2HR_TWIST)/twist_table$SHEP21_0HR_TWIST/median(twist_table$SHEP21_0HR_TWIST))
+mycn_fold = log2(twist_table$SHEP21_2HR_MYCN_NOSPIKE/twist_table$SHEP21_0HR_MYCN_NOSPIKE)
 
-twist_fold = log2(twist_table$SHEP21_24HR_B_TWIST/twist_table$SHEP21_0HR_TWIST)
-
-mycn_auc = twist_table$SHEP21_0HR_MYCN_NOSPIKE*rank_table$CONSTITUENT_SIZE - twist_table$SHEP21_0HR_INPUT_NOSPIKE*rank_table$CONSTITUENT_SIZE
-mycn_sig = twist_table$SHEP21_0HR_MYCN_NOSPIKE - twist_table$SHEP21_0HR_INPUT_NOSPIKE
-
-top = 2000 # take the top 5k twist sites
-twist_auc_order = order((twist_table$SHEP21_0HR_TWIST-twist_table$SHEP21_0HR_INPUT_NOSPIKE)*rank_table$CONSTITUENT_SIZE,decreasing=TRUE)
-
-twist_table_top = twist_table[twist_auc_order[1:top],]
-rank_table_top = rank_table[twist_auc_order[1:top],]
-mycn_auc_top = mycn_auc[twist_auc_order[1:top]]
-twist_fold_top = twist_fold[twist_auc_order[1:top]]
-mycn_sig_top = mycn_sig[twist_auc_order[1:top]]
+mycn_2 = twist_table$SHEP21_2HR_MYCN_NOSPIKE/median(twist_table$SHEP21_2HR_MYCN_NOSPIKE)
+mycn_0 = twist_table$SHEP21_0HR_MYCN_NOSPIKE/median(twist_table$SHEP21_0HR_MYCN_NOSPIKE)
+mycn_fold = log2(mycn_2/mycn_0)
 
 
+a = twist_table$SHEP21_2HR_TWIST/median(twist_table$SHEP21_2HR_TWIST)
+b= twist_table$SHEP21_0HR_TWIST/median(twist_table$SHEP21_0HR_TWIST)
 
-boxplot(twist_table$SHEP21_0HR_MYCN_NOSPIKE[1:5000]*rank_table$CONSTITUENT_SIZE[1:5000],twist_table$SHEP21_0HR_MYCN_NOSPIKE[14561:19560]*rank_table$CONSTITUENT_SIZE[14561:19560],ylim =c(0,1000),cex=0)
-
-
-gained_rows = which(rank_table[,7] > 1)
-
-
-lost_rows = which(rank_table[,7] < -1)
-
-boxplot(twist_table$SHEP21_0HR_MYCN_NOSPIKE[lost_rows]*rank_table$CONSTITUENT_SIZE[lost_rows],twist_table$SHEP21_0HR_MYCN_NOSPIKE[gained_rows]*rank_table$CONSTITUENT_SIZE[gained_rows],ylim =c(0,1000),cex=0)
+c = log2(a/b)
 
 
+pdf(file='./figures/170321_twist_mycn_2hr.pdf',width = 8,height= 10)
 
-mycn_auc[which(mycn_auc <0)] <- 0
+compareVectors(mycn_fold,c,'twist 2 vs 0','mycn 2 vs 0','mycn change vs twist change @ 2 hours mycn shutdown',50)
+dev.off()
+
+twist_fold_24 = log2(twist_table$SHEP21_24HR_B_TWIST/twist_table$SHEP21_0HR_TWIST)
+mycn_fold_24 = log2(twist_table$SHEP21_24HR_MYCN_NOSPIKE/twist_table$SHEP21_0HR_MYCN_NOSPIKE)
+
+compareVectors(twist_fold_24,mycn_fold_24,'twist 2 vs 0','mycn 2 vs 0','mycn change vs twist change @ 2 hours mycn shutdown',50)
+
+compareVectors(mycn_fold_24,twist_fold_24,'twist 2 vs 0','mycn 2 vs 0','mycn change vs twist change @ 2 hours mycn shutdown',50)
 
 
-
-#==================================================================
-#===================CALCULATING AUC AT EACH TIME===================
-#==================================================================
+compareVectors(twist_fold,twist_table$SHEP21_2HR_MYCN_NOSPIKE,'twist 2 vs 0','mycn 2 vs 0','mycn change vs twist change @ 2 hours mycn shutdown',50)
 
 
 
