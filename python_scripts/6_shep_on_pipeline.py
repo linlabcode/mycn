@@ -230,6 +230,34 @@ def main():
     #map_regions(shep_on_dataFile,gffList,names_list=[])
 
 
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================VII. MAKING BOX PLOTS============================')
+    print('#======================================================================')
+    print('\n\n')
+
+
+    set_name = 'SHEP_MYCN'
+    gff_name = 'SHEP_MYCN_CONSERVED_ENHANCER_-1kb_+1kb'
+    names_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    makeBoxPlot(shep_on_dataFile,set_name,gff_name,names_list)
+
+    set_name = 'SHEP_H3K27AC'
+    names_list = ['SHEP_0HR_H3K27AC','SHEP_2HR_H3K27AC','SHEP_6HR_H3K27AC']
+    makeBoxPlot(shep_on_dataFile,set_name,gff_name,names_list)
+
+
+
+    set_name = 'SHEP_MYCN'
+    gff_name = 'SHEP_MYCN_CONSERVED_PROMOTER_-1kb_+1kb'
+    names_list = ['SHEP_0HR_MYCN','SHEP_2HR_MYCN','SHEP_6HR_MYCN']
+    makeBoxPlot(shep_on_dataFile,set_name,gff_name,names_list)
+
+    set_name = 'SHEP_H3K27AC'
+    names_list = ['SHEP_0HR_H3K27AC','SHEP_2HR_H3K27AC','SHEP_6HR_H3K27AC']
+    makeBoxPlot(shep_on_dataFile,set_name,gff_name,names_list)
+
+
 
     print('\n\n')
     print('#======================================================================')
@@ -253,64 +281,23 @@ def main():
 
 
     #==========================================
-    #for shep mycn at shep mycn defined sites
-    plot_name = 'SHEP_H3K27AC'
-    names_list = ['SHEP_0HR_H3K27AC','SHEP_2HR_H3K27AC','SHEP_6HR_H3K27AC']
-    gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
-                '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
-                '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
-                '%sHG19_SHEP_MYCN_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
-                '%sHG19_SHEP_MYCN_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
-                '%sHG19_SHEP_MYCN_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
-                ]
-    plot_color = 'blue'
-    makeHeatmap(names_list,gff_list,plot_name,plot_color)
-
-
-
-
-
-    # #for shep21 mycn regular chip
-    # plot_name = 'SHEP21_MYCN_NOSPIKE'
-    # names_list = ['SHEP21_0HR_MYCN_NOSPIKE','SHEP21_2HR_MYCN_NOSPIKE','SHEP21_24HR_MYCN_NOSPIKE']
+    # #for shep mycn at shep mycn defined sites
+    # plot_name = 'SHEP_H3K27AC'
+    # names_list = ['SHEP_0HR_H3K27AC','SHEP_2HR_H3K27AC','SHEP_6HR_H3K27AC']
     # gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
     #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
-    #             ]
-    # plot_color = 'red'
-    # makeHeatmap(names_list,gff_list,plot_name,plot_color)
-
-
-    # #==========================================
-    # #for shep21 h3k27ac chiprx
-    # plot_name = 'SHEP21_H3K27AC_RX'
-    # names_list = ['SHEP21_0HR_H3K27AC_RX','SHEP21_2HR_H3K27AC_RX','SHEP21_24HR_H3K27AC_RX']
-    # gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
-    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
-    #             ]
-    # plot_color = 'blue'
-    # makeHeatmap(names_list,gff_list,plot_name,plot_color)
-
-    # #for shep21 mycn regular chip
-    # plot_name = 'SHEP21_H3K27AC_NOSPIKE'
-    # names_list = ['SHEP21_0HR_H3K27AC_NOSPIKE','SHEP21_2HR_H3K27AC_NOSPIKE','SHEP21_24HR_H3K27AC_NOSPIKE']
-    # gff_list = ['%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
-    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP21_0HR_MYCN_NOSPIKE_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP_MYCN_CONSERVED_ENHANCER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP_MYCN_CONSERVED_PROMOTER_-5kb_+5kb.gff' % (gffFolder),
+    #             '%sHG19_SHEP_MYCN_CONSERVED_-5kb_+5kb.gff' % (gffFolder),
     #             ]
     # plot_color = 'blue'
     # makeHeatmap(names_list,gff_list,plot_name,plot_color)
 
 
-    #big questions
-    #do we see enhancer invasion?
-    
-    #map enhancers at each time point
-    
-    #define myc landscape
 
-    #quantify binding at the consensus myc landscape
-    #do this using the enhancer promoter code
-    #at the union of myc sites
-    #or at the nb_mycn conserved sites
+
+
 
 
 
@@ -654,6 +641,42 @@ def map_regions(dataFile,gffList,names_list=[]):
         signal_table_path = '%s%s_%s_SIGNAL.txt' % (signalFolder,gffName,dataFile_name)
         print(signal_table_path)
         pipeline_dfci.makeSignalTable(dataFile,gffFile,mappedFolder,namesList = names_list,medianNorm=False,output =signal_table_path)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~WRAPPING BOXPLOT R CODE~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+def makeBoxPlot(dataFile,set_name,gff_name,names_list=[]):
+        
+    '''
+    wrapping the boxplot script
+    '''
+
+    boxplot_script_path = '%sr_scripts/4_chiprx_plots.R' % (projectFolder)
+    scale_table_path = '%sHG19_SHEP21_CHIPRX_SCALE_FACTORS.txt' % (tableFolder)
+
+    dataDict=  pipeline_dfci.loadDataTable(dataFile)
+    dataFile_name = dataFile.split('/')[-1].split('.')[0]
+    if len(names_list) == 0:
+        names_list = [name for name in dataDict.keys() if name.count(set_name) > 0]
+        names_list.sort()
+
+    background_list = [ dataDict[name]['background'] for name in names_list]
+    names_string = ','.join(names_list)
+    background_string = ','.join(background_list)
+
+
+    signal_table_path = '%sHG19_%s_%s_SIGNAL.txt' % (signalFolder,gff_name,dataFile_name)
+    
+    plot_name = '%s_%s' % (gff_name,set_name)
+    r_cmd = 'Rscript %s %s %s %s %s %s %s' % (boxplot_script_path,signal_table_path,scale_table_path,names_string,background_string,plot_name,projectFolder)
+    print(r_cmd)
+    
+    os.system(r_cmd)
+
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~WRAPPING HEATMAP AND META R CODE~~~~~~~~~~~~~~~~~~~

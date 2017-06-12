@@ -65,6 +65,9 @@ annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
 projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/thmycn/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+
+hg19_projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+
 projectFolder = utils.formatFolder(projectFolder,True)
 #standard folder names
 gffFolder ='%sgff_mm9/' % (projectFolder)
@@ -193,24 +196,205 @@ def main():
     # namesList = ['THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac','THMYCN1_H3K27Ac']
     # bashFileName,region_map_path,namesList=define_enhancer_landscape(mouse_dataFile,analysisName,namesList)
 
+    print('\n\n')
+    print('#======================================================================')
+    print('#=================IV. LIFTING OVER NB CONSERVED REGIONS================')
+    print('#======================================================================')
+    print('\n\n')
+
+    # #liftover a pair of gffs
+    # #first convert to bed
+    # nb_promoter_gff_path = '%sgff/HG19_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.gff' % (hg19_projectFolder)
+    # nb_enhancer_gff_path = '%sgff/HG19_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.gff' % (hg19_projectFolder)
+
+    # nb_promoter_bed_path ='%sbeds/HG19_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.bed' % (hg19_projectFolder)
+    # nb_enhancer_bed_path ='%sbeds/HG19_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.bed' % (hg19_projectFolder)
+
+    # nb_promoter_gff = utils.parseTable(nb_promoter_gff_path,'\t')
+    # nb_enhancer_gff = utils.parseTable(nb_enhancer_gff_path,'\t')
+
+
+    # utils.gffToBed(nb_promoter_gff,nb_promoter_bed_path)
+    # utils.gffToBed(nb_enhancer_gff,nb_enhancer_bed_path)
+
+    # print('converted NB conserved gffs to beds at %s and %s' % (nb_promoter_bed_path,nb_enhancer_bed_path))
+
+    # #note, now you have to liftover manually to create beds
+    # mm9_promoter_bed_path = '%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.bed' % (bedFolder)
+    # mm9_enhancer_bed_path = '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.bed' % (bedFolder)
+
+    # mm9_promoter_gff_path = '%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.gff' % (gffFolder)
+    # mm9_enhancer_gff_path = '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.gff' % (gffFolder)
+    
+    # utils.bedToGFF(mm9_promoter_bed_path,mm9_promoter_gff_path)
+    # utils.bedToGFF(mm9_enhancer_bed_path,mm9_enhancer_gff_path)
+
+    # print('writing mm9 nb mycn sites to %s and %s' % (mm9_promoter_gff_path,mm9_enhancer_gff_path))
 
 
     print('\n\n')
     print('#======================================================================')
-    print('#========================IV. RUNNING DYNAMIC===========================')
+    print('#======================V. MAPPING ENRICHED TO GFFS=====================')
     print('#======================================================================')
     print('\n\n')
 
-    dynamic_meta_folder = utils.formatFolder('%sdynamic_meta_mm9' %(projectFolder),True)
-    #wrapping dynamic
-    meta_rose_1 = '%sGANGLIA_H3K27AC/' %  (metaRoseFolder)
-    meta_rose_2 = '%sTHMYCN_H3K27AC/' %  (metaRoseFolder)
-    group1_names = ['CG_H3K27Ac','SCG_H3K27Ac']
-    group2_names = ['THMYCN1_H3K27Ac','THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac']
-    output_folder = utils.formatFolder('%sGANGLIA_THMYCN_SE/' % (dynamic_meta_folder),True)
-    name_1 = 'GANGLIA'
-    name_2 = 'THMYCN'
-    wrap_dynamic_meta(mouse_dataFile,meta_rose_1,meta_rose_2,output_folder,group1_names,group2_names,name_1,name_2)
+    # setName = 'THMYCN'
+    # gffList = [mm9_promoter_gff_path,mm9_enhancer_gff_path]
+    # cellTypeList = ['THMYCN1','THMYCN2','THMYCN','CG','SCG']
+    # mapList = ['CG_H3K27Ac',
+    #             'SCG_H3K27Ac',
+    #             'THMYCN1_H3K27Ac',
+    #             'THMYCN_139423_H3K27Ac',
+    #             'THMYCN_139076_H3K27Ac',
+    #             ]
+
+    # #pipeline_dfci.mapEnrichedToGFF(mouse_dataFile,setName,gffList,cellTypeList,macsEnrichedFolder,mappedEnrichedFolder,macs=True,namesList=mapList,useBackground=True)
+
+    # #summarize info for venn diagrams for each
+
+    # promoter_mapped_path = '%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000/MM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000_THMYCN.txt' % (mappedEnrichedFolder)
+    # promoter_venn_path = '%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000_VENN.txt' % (tableFolder)
+    # summarizeVenn(promoter_mapped_path,group_list = ['CG','THMYCN'],output=promoter_venn_path)
+
+
+    # enhancer_mapped_path = '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000/MM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000_THMYCN.txt' % (mappedEnrichedFolder)
+    # enhancer_venn_path = '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000_VENN.txt' % (tableFolder)
+    # summarizeVenn(enhancer_mapped_path,group_list = ['CG','THMYCN'],output=enhancer_venn_path)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================VI. MAKING MYCN REGIONS GFF======================')
+    print('#======================================================================')
+    print('\n\n')
+
+    dataDict = pipeline_dfci.loadDataTable(mouse_dataFile)
+    names_list = ['THMYCN2_MYCN',
+                  'THMYCN_139076_MYCN',
+                  'THMYCN_139423_MYCN',
+                  ]
+    
+    mycn_loci = []
+    for name in names_list:
+        mycn_collection = utils.importBoundRegion('%s%s' % (macsEnrichedFolder,dataDict[name]['enrichedMacs']),name)
+        mycn_loci+=mycn_collection.getLoci()
+
+    mycn_collection = utils.LocusCollection(mycn_loci,50)
+    mycn_collection.stitchCollection()
+    mycn_gff = utils.locusCollectionToGFF(mycn_collection)
+    mycn_gff_path = '%sMM9_THMYCN_MYCN_-0_+0.gff' % (gffFolder)
+    utils.unParseTable(mycn_gff,mycn_gff_path,'\t')
+
+    #make collections
+    promoter_collection = utils.gffToLocusCollection('%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.gff' % (gffFolder))
+    enhancer_collection = utils.gffToLocusCollection('%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.gff' % (gffFolder))
+    #make the overlap table
+    overlap_table = [['PROMOTER','ENHANCER','NONE']]
+    promoter_count = 0
+    enhancer_count = 0
+    none_count = 0
+    for line in mycn_gff:
+        locus = utils.Locus(line[0],int(line[3])-10000,int(line[4])+10000,'.')
+        if enhancer_collection.getOverlap(locus,'both'):
+            enhancer_count +=1
+            continue
+
+        if promoter_collection.getOverlap(locus,'both'):
+            promoter_count +=1
+        else:
+            none_count +=1
+
+    overlap_table.append([promoter_count,enhancer_count,none_count])
+    overlap_table_path = '%sMM9_THMYCN_OVERLAP.txt' % (tableFolder)
+    utils.unParseTable(overlap_table,overlap_table_path,'\t')
+        
+
+    
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================VI. MAPPING GFFS FOR HEATMAP=====================')
+    print('#======================================================================')
+    print('\n\n')
+
+    #map_for_heatmap(mouse_dataFile)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================VII. AVERAGING MAPPED SIGNAL=====================')
+    print('#======================================================================')
+    print('\n\n')
+
+
+    # set_list = ['GANGLIA_H3K27AC','THMYCN_H3K27AC','THMYCN_MYCN']
+    # set_names = [
+    #     ['CG_H3K27Ac','SCG_H3K27Ac'],
+    #     ['THMYCN1_H3K27Ac','THMYCN_139423_H3K27Ac','THMYCN_139076_H3K27Ac'],
+    #     ['THMYCN2_MYCN','THMYCN_139076_MYCN','THMYCN_139423_MYCN']
+    # ]
+    # for i in range(len(set_list)):
+    #     setName = set_list[i]
+    #     names_list =set_names[i]
+    #     print(setName)
+    #     print(names_list)
+    #     #for promoters
+    #     mapped_list = ['%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000/MM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000_%s.gff' % (mappedFolder,name) for name in names_list]
+    #     output_path = '%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000/MM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000_%s.gff' % (mappedFolder,setName)
+    #     print(output_path)
+    #     averagingMappedSignal(mapped_list,output_path,setName)
+        
+    #     #for enhancers
+    #     mapped_list = ['%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000/MM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000_%s.gff' % (mappedFolder,name) for name in names_list]
+    #     output_path = '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000/MM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000_%s.gff' % (mappedFolder,setName)
+    #     print(output_path)
+    #     averagingMappedSignal(mapped_list,output_path,setName)
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#=====================VIII. MAKING HEATMAPS/METAS======================')
+    print('#======================================================================')
+    print('\n\n')
+
+
+    # set_list = ['THMYCN_MYCN','GANGLIA_H3K27AC','THMYCN_H3K27AC']
+    # gff_list = ['%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.gff' % (gffFolder),
+    #             '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.gff' % (gffFolder),
+    #             ]
+    # plot_name = 'THMYCN_MYCN_ORDERED_BLUE'
+    # plot_color = 'blue'
+    # makeHeatmap(set_list,gff_list,plot_name,plot_color)
+
+
+    # set_list = ['THMYCN_MYCN','THMYCN_MYCN','THMYCN_MYCN']
+    # gff_list = ['%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.gff' % (gffFolder),
+    #             '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.gff' % (gffFolder),
+    #             ]
+    # plot_name = 'THMYCN_MYCN_ORDERED_RED'
+    # plot_color = 'red'
+    # makeHeatmap(set_list,gff_list,plot_name,plot_color)
+
+
+
+
+
+    # print('\n\n')
+    # print('#======================================================================')
+    # print('#========================IV. RUNNING DYNAMIC===========================')
+    # print('#======================================================================')
+    # print('\n\n')
+
+    # dynamic_meta_folder = utils.formatFolder('%sdynamic_meta_mm9' %(projectFolder),True)
+    # #wrapping dynamic
+    # meta_rose_1 = '%sGANGLIA_H3K27AC/' %  (metaRoseFolder)
+    # meta_rose_2 = '%sTHMYCN_H3K27AC/' %  (metaRoseFolder)
+    # group1_names = ['CG_H3K27Ac','SCG_H3K27Ac']
+    # group2_names = ['THMYCN1_H3K27Ac','THMYCN_139076_H3K27Ac','THMYCN_139423_H3K27Ac']
+    # output_folder = utils.formatFolder('%sGANGLIA_THMYCN_SE/' % (dynamic_meta_folder),True)
+    # name_1 = 'GANGLIA'
+    # name_2 = 'THMYCN'
+    # wrap_dynamic_meta(mouse_dataFile,meta_rose_1,meta_rose_2,output_folder,group1_names,group2_names,name_1,name_2)
 
 
 #==========================================================================
@@ -308,6 +492,11 @@ def make_active_gene_lists(mouse_dataFile):
     pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
 
 
+    setList = [['SCG_H3K27Ac'],['CG_H3K27Ac'],['THMYCN_139076_H3K27Ac'],['THMYCN_139423_H3K27Ac'],['THMYCN1_H3K27Ac'],['THMYCN2_H3K27Ac']]
+    output = '%sgeneListFolder_mm9/MM9_ALL_H3K27AC_ACTIVE.txt' % (projectFolder)
+    pipeline_dfci.makeGFFListFile(mappedEnrichedFile,setList,output,annotFile)
+
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -348,7 +537,7 @@ def define_enhancer_landscape(mouse_dataFile,analysisName,namesList=[]):
     bashFile.write('#!/usr/bin/bash\n\n')
     bashFile.write('cd %s\n' % (pipeline_dir))
 
-    metaRoseCmd = 'python %sROSE2_META.py -g hg19 -i %s -r %s -c %s -o %s -n %s' % (pipeline_dir,bedString,bamString,controlBamString,outputFolder,analysisName)
+    metaRoseCmd = 'python %sROSE2_META.py -g mm9 -i %s -r %s -c %s -o %s -n %s' % (pipeline_dir,bedString,bamString,controlBamString,outputFolder,analysisName)
 
     bashFile.write(metaRoseCmd + '\n')
     bashFile.close()
@@ -365,208 +554,193 @@ def define_enhancer_landscape(mouse_dataFile,analysisName,namesList=[]):
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~DEFINING NB MYCN BINDING LANDSCAPE~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~SUMMARIZING MAPPED ENRICHED TO MAKE VENN DIAGRAMS~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-def define_mycn_landscape(projectFolder,pipeline_dir,nb_all_chip_dataFile):
+def summarizeVenn(mapped_path,group_list = ['CG','THMYCN'],output=''):
 
     '''
-    defines the MYCN baseline using MYCN chips from NGP, KELLY, BE2C, and SHEP21
-    uses the meta rose code and writes out a .sh file for reproducibility
+    summarizes binary occupancy across group to make a venn diagram
     '''
 
-    #For MYCN baseline
-    #no TSS exclusion and no stitching
-
-    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
-    analysisName = 'NB_MYCN'
-    namesList = [name for name in dataDict.keys() if name.count('MYCN') == 1]
-
-    bamFileList = [dataDict[name]['bam'] for name in namesList]
-    bamString = string.join(bamFileList,',')
-
-    controlBams = [dataDict[name]['background'] for name in namesList]
-    controlFileList = [dataDict[name]['bam'] for name in controlBams]
-    controlBamString = string.join(controlFileList,',')
-
-    bedFileList = [macsEnrichedFolder + dataDict[name]['enrichedMacs'] for name in namesList]
-    bedString = string.join(bedFileList,',')
-
-    roseFolder = '%smeta_rose/' % (projectFolder)
-    roseFolder = utils.formatFolder(roseFolder,True)
-
-    outputFolder = '%s%s/' % (roseFolder,analysisName)
-    bashFileName = '%s%s_meta_rose.sh' % (roseFolder,analysisName)
-
-    bashFile = open(bashFileName,'w')
-    bashFile.write('#!/usr/bin/bash\n\n')
-    bashFile.write('cd %s\n' % (pipeline_dir))
-
-    metaRoseCmd = 'python %sROSE2_META.py -g hg19 -i %s -r %s -c %s -o %s -n %s -t 0 -s 0 --mask %s' % (pipeline_dir,bedString,bamString,controlBamString,outputFolder,analysisName,maskFile)
-
-    bashFile.write(metaRoseCmd + '\n')
-    bashFile.close()
-
-    #this is the expeceted region map output
-    region_map_path = '%s%s/%s_0KB_STITCHED_ENHANCER_REGION_MAP.txt' % (roseFolder,analysisName,analysisName)
-    return bashFileName,region_map_path,namesList
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~MAKING REGION GFFS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-def makeStitchedGFF(dataFile,set_name,names_list):
-
-    '''
-    makes a stitched gff and dumps it into the gff folder
-    '''
-
-    dataDict = pipeline_dfci.loadDataTable(dataFile)
+    group_table = [['GFF_LINE','ID'] + group_list]
     
-    loci = []
-    collection_dict = {}
-    for name in names_list:
-        print(name)
-        macsEnrichedFile = '%s%s_peaks_filtered.bed' % (macsEnrichedFolder,name)
-        collection = utils.importBoundRegion(macsEnrichedFile,name)
-        collection_dict[name]=collection
-        loci+= collection.getLoci()
-
-    all_collection = utils.LocusCollection(loci,50)
-    stitched_collection = all_collection.stitchCollection()
-
-    gff = utils.locusCollectionToGFF(stitched_collection)
-
-    out_path = '%sHG19_%s_UNION_-0_+0.gff' % (gffFolder,set_name)
-    print(out_path)
-    utils.unParseTable(gff,out_path,'\t')
-
-
-    #now get the intersect gff
-    print('getting intersection gff')
-    stitched_loci = stitched_collection.getLoci()
-    intersect_loci = []
-    ticker = 0
-    for locus in stitched_loci:
-        if ticker%1000==0:
-            print(ticker)
-        ticker+=1
-        overlap = True
-        for name in names_list:
-            if len(collection_dict[name].getOverlap(locus,'both')) == 0:
-                overlap = False
-
-        if overlap == True:
-            intersect_loci.append(locus)
-
-            
-    print('identified %s stitched loci' % (len(stitched_loci)))
-    print('identified %s intersect loci' % (len(intersect_loci)))
-
-    intersect_collection = utils.LocusCollection(intersect_loci,50)
-
-    intersect_gff = utils.locusCollectionToGFF(intersect_collection)
-
-    intersect_path = '%sHG19_%s_INTERSECT_-0_+0.gff' % (gffFolder,set_name)
-    print(intersect_path)
-    utils.unParseTable(intersect_gff,intersect_path,'\t')
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~MAKING ACTIVS TSS GFFS~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-def make_tss_gff(gene_list_path,name):
-
-    '''
-    makes a +/- 1kb tss gff from the provided gene list
-    '''
-
-    tss_gff = utils.parseTable('%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder),'\t')
-
-    gene_list_table = utils.parseTable(gene_list_path,'\t')
-
-    gene_rows = [int(line[0]) - 1 for line in gene_list_table]
-
-    row_gff =[tss_gff[row] for row in gene_rows]
-
-    row_gff_path = '%sHG19_TSS_%s_-1000_+1000.gff' % (gffFolder,name)
-
-    utils.unParseTable(row_gff,row_gff_path,'\t')
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~MAKING MYCN PROMOTER AND ENHANCER REGIONS~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-def make_mycn_gffs(mycn_stats_path,window=0):
-
-    '''
-    makes promoter and enhancer gffs from the mycn stats table
-    with an appropriate flanking window
-    returns paths
-    '''
-
-    window = int(window)
-
-    mycn_stats_table = utils.parseTable(mycn_stats_path,'\t')
+    mapped_table = utils.parseTable(mapped_path,'\t')
     
-    enhancer_gff = []
-    promoter_gff = []
-    for line in mycn_stats_table[1:]:
-        
-        gff_line = [line[1],line[0],'',int(line[2]) - window,int(line[3]) + window,'','.','',line[0]]
+    group_cols = []
+    for group in group_list:
+        group_names = [name for name in mapped_table[0] if name.count(group) > 0]
+        group_cols.append([mapped_table[0].index(name) for name in group_names])
 
-        if int(line[5]) == 1:
-            promoter_gff.append(gff_line)
-        
-        if int(line[6]) == 1:
-            enhancer_gff.append(gff_line)
+    print(group_cols)
+    for line in mapped_table[1:]:
+        binary_vector = [] #a 1/0 vector to hold mapping by group
+        for i in range(len(group_list)):
+            cols = group_cols[i]
+            signal = max([int(line[x]) for x in cols])
+            binary_vector.append(signal)
 
-    enhancer_gff_path = '%sHG19_NB_MYCN_CONSERVED_ENHANCER_-%s_+%s.gff' % (gffFolder,window,window)
-    promoter_gff_path = '%sHG19_NB_MYCN_CONSERVED_PROMOTER_-%s_+%s.gff' % (gffFolder,window,window)
-    utils.unParseTable(promoter_gff,promoter_gff_path,'\t')
-    utils.unParseTable(enhancer_gff,enhancer_gff_path,'\t')
+        new_line = line[0:2] + binary_vector
+        group_table.append(new_line)
 
+    print(group_table[0:5])
+
+    #now add up the stats
+    #this part assumes only 2 groups for now otherwise gets combinatorially challenging
+    #permute all possible binary combinations given the vector length
+    binary_combinations=[[0],[1]]
+    for i in range(len(group_list)-1):
+        new_combinations = []
+        for x in binary_combinations:
+            print(x)
+            x1 = list(x) + [1]
+            x0 = list(x) + [0]
+            new_combinations.append(x1)
+            new_combinations.append(x0)
+
+
+            binary_combinations = list(new_combinations)
+
+    print(binary_combinations)
+    count_table = [group_list + ['count']]
+    for combo in binary_combinations:
+        count = len([line for line in group_table[1:] if line[2:] == combo])
+
+        count_table.append(combo + [count])
+    print(count_table)
+    if len(output) > 0:
+        utils.unParseTable(count_table,output,'\t')
+    else:
+        return count_table
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAPPING TO REGIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~MAPPING SIGNAL AT SHEP21 MYCN SITES FOR METAS~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
-def map_regions(nb_all_chip_dataFile,gffList,names_list=[]):
+def map_for_heatmap(mouse_dataFile):
 
     '''
-    making a normalized binding signal table at all regions
+    to make quantification easier, all bams read lengths extended to 200
+
     '''
 
-    #since each bam has different read lengths, important to carefully normalize quantification
-    dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
+    dataDict = pipeline_dfci.loadDataTable(mouse_dataFile)
 
-    if len(names_list) == 0:
-        names_list = dataDict.keys()
-    names_list.sort()
+    #gff files
+    nb_conserved_promoter_gff_5kb_file = '%sMM9_NB_MYCN_CONSERVED_PROMOTER_-5000_+5000.gff' % (gffFolder)
+    nb_conserved_enhancer_gff_5kb_file = '%sMM9_NB_MYCN_CONSERVED_ENHANCER_-5000_+5000.gff' % (gffFolder)
+
+
+
+    #setting the list of gff's to map
+    gffList = [
+        nb_conserved_promoter_gff_5kb_file,
+        nb_conserved_enhancer_gff_5kb_file,
+        ]
+    cellTypeList = ['CG','SCG','THMYCN1','THMYCN2','THMYCN']
+    mapList = ['CG_H3K27Ac',
+               'SCG_H3K27Ac',
+               'THMYCN1_H3K27Ac',
+               'THMYCN_139423_H3K27Ac',
+               'THMYCN_139076_H3K27Ac',
+               'THMYCN2_MYCN',
+               'THMYCN_139076_MYCN',
+               'THMYCN_139423_MYCN',
+                ]
+
+    #for the non spike in
+    #note, this data is 75bp reads
+    pipeline_dfci.mapBams(mouse_dataFile,cellTypeList,gffList,mappedFolder,nBin = 200,overWrite =False,rpm=True,nameList = mapList,extension=125)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~AVERAGING MAPPED GFF SIGNAL~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def averagingMappedSignal(mapped_list,output_path,setName):
+
+    '''
+    averages signal across a set of mapped gffs and writes the new output
+    '''
+
+    #create a list containing all of the tables
+    table_list = [utils.parseTable(mapped_list[i],'\t') for i in range(len(mapped_list))]
+
+    #first set up the output header
+    output_header = ['GENE_ID','locusLine']
+    nCols = len(table_list[0][0]) - 2
+    for n in range(nCols):
+        output_header.append('bin_%s_%s' % (n+1,setName))
+        
+    output_table = [output_header]
+    #now iterate through each row to set up the gene ID and locus line
+    for i in range(1,len(table_list[0])):
+        
+        line = table_list[0][i]
+        if len(line) > 2:
+            output_table.append(line[0:2])
+
+    #now run through the whole matrix in i,j notation and put average signal into the final matrix
+    
+    #iterate through rows
+    row_ticker = 1
+    for i in range(1,len(table_list[0])):
+        line = table_list[0][i]
+        if len(line) == 2:
+            continue
+        signal_vector = []
+        #iterate through columns
+        for j in range(2,len(table_list[0][0])):
+            try:
+                signal_vector = [float(table[i][j]) for table in table_list]
+            except IndexError:
+                print(i,j)
+                print(table_list[0][i])
+                print(table_list[1][i])
+
+
+            signal =max(round(numpy.average(signal_vector),4),0)
+
+            output_table[row_ticker].append(signal)
+        row_ticker+=1
+
+    print(len(table_list[0]))
+    print(len(output_table))
+    utils.unParseTable(output_table,output_path,'\t')
+    return output_path
+
 
     
-    for name in names_list:
-        bam = utils.Bam(dataDict[name]['bam'])
-        read_length = bam.getReadLengths()[0]
-        bam_extension = 200-read_length
-        print('For dataset %s using an extension of %s' % (name,bam_extension))
-        pipeline_dfci.mapBamsBatch(nb_all_chip_dataFile,gffList,mappedFolder,overWrite =False,namesList = [name],extension=bam_extension,rpm=True)
 
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~WRAPPING HEATMAP AND META R CODE~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def makeHeatmap(names_list,gff_list,plot_name,plot_color):
+
+    '''
+    wrapper for the heatmap and meta R script
+    '''
+    meta_heat_script = '%sr_scripts/5_chiprx_heatmaps.R' % (hg19_projectFolder)
+    scale_table_path = '%stables/HG19_SHEP21_CHIPRX_SCALE_FACTORS.txt' % (hg19_projectFolder)
+    figures_path = utils.formatFolder('%sfigures/' % (projectFolder),True)
+    figures_path = utils.formatFolder('%sfigures/5_chiprx_heatmaps/' % (projectFolder),True)
+    
+
+    names_string = ','.join(names_list)
+    
+    for gff in gff_list:
+        gffName = gff.split('/')[-1].split('.')[0]
+        mapped_list = ['%s%s/%s_%s.gff' % (mappedFolder,gffName,gffName,name) for name in names_list]
+        mapped_string = ','.join(mapped_list)
         
+        r_cmd = 'Rscript %s %s %s %s %s %s %s %s %s' % (meta_heat_script,mapped_string,scale_table_path,names_string,plot_color,gffName,plot_name,'TRUE',projectFolder)
+        print(r_cmd)
+        os.system(r_cmd)
 
-    #want a signal table of all datasets to each gff
-    print('Writing signal tables for each gff:')
-    for gffFile in gffList:
-        gffName = gffFile.split('/')[-1].split('.')[0]
-        signal_table_path = '%s%s_SIGNAL.txt' % (signalFolder,gffName)
-        print(signal_table_path)
-        pipeline_dfci.makeSignalTable(nb_all_chip_dataFile,gffFile,mappedFolder,namesList = names_list,medianNorm=False,output =signal_table_path)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

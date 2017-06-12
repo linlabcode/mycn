@@ -41,7 +41,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -65,7 +65,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -94,7 +94,7 @@ maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 gtfFile = '%sgtf/genes_ercc.gtf' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder,maskFolder,rnaFolder]
@@ -171,13 +171,13 @@ def main():
     print('\n\n')
 
 
-    shep21_bash_path = process_shep_rna(shep21_rna_dataFile,gtfFile)
+    #shep21_bash_path = process_shep_rna(shep21_rna_dataFile,gtfFile)
 
-    shep21_drop_rep_bash_path = process_shep_rna_drop_rep(shep21_rna_dataFile,gtfFile)
+    #shep21_drop_rep_bash_path = process_shep_rna_drop_rep(shep21_rna_dataFile,gtfFile)
 
     be2c_drug_bash_path = process_be2c_drug_rna(be2c_rna_drug_dataFile,gtfFile)
 
-    be2c_twist_drug_path = process_be2c_twist_rna(be2c_rna_twist_dataFile,gtfFile)
+    #be2c_twist_drug_path = process_be2c_twist_rna(be2c_rna_twist_dataFile,gtfFile)
 
 
 
@@ -292,7 +292,7 @@ def makeCuffTable(dataFile,analysisName,gtfFile,cufflinksFolder,groupList=[],bas
 
 
     
-    rCmd = 'R --no-save %s %s %s %s TRUE < %snormalizeRNASeq.R\n' % (geneFPKMFile,rOutputFolder,analysisName,namesString,pipeline_dir)
+    rCmd = 'Rscript %snormalizeRNASeq.R %s %s %s %s TRUE\n' % (pipeline_dir,geneFPKMFile,rOutputFolder,analysisName,namesString)
 
     bashFile.write(rCmd)
     bashFile.close()
@@ -371,14 +371,10 @@ def process_be2c_drug_rna(be2c_rna_drug_dataFile,gtfFile):
 
     cufflinksFolder = utils.formatFolder('%sbe2c_drug_cufflinks/' % (rnaFolder),True)
 
-    groupList = [['BE2C_DMSO_A1','BE2C_DMSO_A2','BE2C_DMSO_A3'],
-                 ['BE2C_JQ1_4HR_1','BE2C_JQ1_4HR_2','BE2C_JQ1_4HR_3'],
+    groupList = [['BE2C_DMSO_B1','BE2C_DMSO_B2','BE2C_DMSO_B3'],
+                 ['BE2C_JQ1_4HR_2','BE2C_JQ1_4HR_3'],
                  ['BE2C_JQ1_8HR_1','BE2C_JQ1_8HR_2','BE2C_JQ1_8HR_3'],
                  ['BE2C_JQ1_24HR_1','BE2C_JQ1_24HR_2','BE2C_JQ1_24HR_3'],
-                 ['BE2C_DMSO_B1','BE2C_DMSO_B2','BE2C_DMSO_B3'],
-                 ['BE2C_CD532_4HR_1','BE2C_CD532_4HR_2','BE2C_CD532_4HR_3'],
-                 ['BE2C_CD532_8HR_1','BE2C_CD532_8HR_2','BE2C_CD532_8HR_3'],
-                 ['BE2C_CD532_24HR_1','BE2C_CD532_24HR_2','BE2C_CD532_24HR_3'],
                  ]
 
     bashFileName = '%sbe2c_drug_rna_seq_cuff.sh' % (cufflinksFolder)

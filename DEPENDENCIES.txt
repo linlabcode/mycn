@@ -1,5 +1,6 @@
 #LIST OF DEPENDENCIES FOR CODE
 
+#command line tools
 bamliquidator
 samtools
 macs 1.4.2
@@ -7,6 +8,7 @@ macs2
 tabix
 bgzip
 gsea
+liftOver (https://genome-store.ucsc.edu/)
 
 #R
 ggplot2

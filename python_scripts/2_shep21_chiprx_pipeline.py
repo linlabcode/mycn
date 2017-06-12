@@ -39,7 +39,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -63,7 +63,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -87,7 +87,7 @@ maskFolder = '%smasks/' % (projectFolder)
 maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder,maskFolder]
@@ -215,12 +215,13 @@ def main():
     # gene_list_path = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
     # make_tss_gff(gene_list_path,'NB_H3K27AC_ACTIVE_UNION')
 
-    # #taking mycn sites and subdividing by promoters and enhancers and adding +/- 500 flank
-    # mycn_stats_path = '%sHG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (tableFolder)
-    # make_mycn_gffs(mycn_stats_path,window=0)
-    # make_mycn_gffs(mycn_stats_path,window=500)
+    #taking mycn sites and subdividing by promoters and enhancers and adding +/- 500 flank
+    mycn_stats_path = '%sHG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (tableFolder)
+    make_mycn_gffs(mycn_stats_path,window=0)
+    make_mycn_gffs(mycn_stats_path,window=500)
+    make_mycn_gffs(mycn_stats_path,window=5000)
 
-
+    sys.exit()
     print('\n\n')
     print('#======================================================================')
     print('#======================VII. MAPPING TO REGIONS=========================')

@@ -176,12 +176,12 @@ def main():
 
     #first is shep21 at the mycn conserved regions w/ the replicate dropped
     #and at shep21 defined regions
-    wrap_shep21()
+    #wrap_shep21()
     wrap_be2c_jq1()
 
-    wrap_be2c_cd532()
+    #wrap_be2c_cd532()
     #now we need to run it w/ the replicate removed
-    wrap_be2c_shTwist()
+    #wrap_be2c_shTwist()
 
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================

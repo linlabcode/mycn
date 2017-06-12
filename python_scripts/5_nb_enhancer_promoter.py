@@ -39,7 +39,7 @@ import sys, os
 # Get the script's full local path
 whereAmI = os.path.dirname(os.path.realpath(__file__))
 
-pipeline_dir = '/home/chazlin/src/pipeline/'
+pipeline_dir = '/storage/cylin/home/cl6/pipeline/'
 
 sys.path.append(whereAmI)
 sys.path.append(pipeline_dir)
@@ -63,7 +63,7 @@ genome ='hg19'
 annotFile = '%s/annotation/%s_refseq.ucsc' % (pipeline_dir,genome)
 
 #project folders
-projectFolder = '/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
+projectFolder = '/storage/cylin/grail/projects/mycn_resub/%s/' % (projectName) #PATH TO YOUR PROJECT FOLDER
 
 #standard folder names
 gffFolder ='%sgff/' % (projectFolder)
@@ -87,7 +87,7 @@ maskFolder = '%smasks/' % (projectFolder)
 maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder,maskFolder]
@@ -339,18 +339,56 @@ def main():
 
 
 
-    #for MM
-    myc_list = ['U87_MYC']
-    for myc_name in myc_list:
-        input_path = '%sU87_MYC_peaks.bed' % (macsEnrichedFolder)
-        activity_path = '%sHG19_U87_H3K27AC_ACTIVE.txt' % (geneListFolder)
-        analysis_name = 'U87_MYC_REGIONS_%s' % (myc_name)
-        enhancer_promoter_bash = wrap_enhancer_promoter(u87_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
-        os.system('bash %s' % (enhancer_promoter_bash))
+    # #for u87
+    # myc_list = ['U87_MYC']
+    # for myc_name in myc_list:
+    #     input_path = '%sU87_MYC_peaks.bed' % (macsEnrichedFolder)
+    #     activity_path = '%sHG19_U87_H3K27AC_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = 'U87_MYC_REGIONS_%s' % (myc_name)
+    #     enhancer_promoter_bash = wrap_enhancer_promoter(u87_dataFile,input_path,activity_path,analysis_name,names_list = [myc_name])
+    #     os.system('bash %s' % (enhancer_promoter_bash))
 
 
 
 
+    print('\n\n')
+    print('#======================================================================')
+    print('#========VII. ENHANCER PROMOTER ANALYSIS FOR OTHER MARKS IN BE2C========')
+    print('#======================================================================')
+    print('\n\n')
+
+
+    # #names_list = ['BE2C_BRD4','BE2C_H3K27AC','BE2C_TWIST','BE2C_RNA_POL2']
+    # names_list = ['BE2C_H3K27AC']
+    # names_list = ['BE2C_BRD4','BE2C_TWIST','BE2C_RNA_POL2','BE2C_H3K27ME3','BE2C_H3K4ME3']
+
+    # for name in names_list:
+    #     input_path = '%s%s_peaks.bed' % (macsEnrichedFolder,name)
+    #     activity_path = '%sHG19_BE2C_H3K27AC_ACTIVE.txt' % (geneListFolder)
+    #     analysis_name = '%s_REGIONS' % (name)
+    #     enhancer_promoter_bash = wrap_enhancer_promoter(be2c_dataFile,input_path,activity_path,analysis_name,names_list = [name])
+    #     os.system('bash %s' % (enhancer_promoter_bash))
+
+
+
+    print('\n\n')
+    print('#======================================================================')
+    print('#====================VIII. MAKING GENE TABLE W/ LENGTH=================')
+    print('#======================================================================')
+    print('\n\n')
+
+    #for nb conserved
+    gene_table_path = '%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_GENE_TABLE.txt' % (projectFolder)
+    peak_table_path = '%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_PEAK_TABLE.txt' % (projectFolder)
+    gene_path = addLengths(gene_table_path,peak_table_path)
+
+    #for shep21
+    gene_table_path = '%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_0HR_MYCN_NOSPIKE/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_0HR_MYCN_NOSPIKE_GENE_TABLE.txt' % (projectFolder)
+    peak_table_path = '%senhancerPromoter/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_0HR_MYCN_NOSPIKE/SHEP21_0HR_MYCN_NOSPIKE_REGIONS_SHEP21_0HR_MYCN_NOSPIKE_PEAK_TABLE.txt' % (projectFolder)
+
+    gene_path = addLengths(gene_table_path,peak_table_path)
+
+        
 
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
@@ -422,6 +460,63 @@ def wrap_enhancer_promoter(dataFile,input_path,activity_path,analysis_name,names
     return(ep_bash_path)
 
 
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~ADD LENGTHS TO A GENE TABLE~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+def addLengths(gene_table_path,peak_table_path):
+    
+    '''
+    add tss and distal lengths to a gene table
+    using the peak table
+    '''
+
+    output_path = string.replace(gene_table_path,'GENE_TABLE','GENE_TABLE_LENGTH')
+
+    print(output_path)
+
+    tss_dict = defaultdict(int)
+    distal_dict = defaultdict(int)
+    
+    peak_table = utils.parseTable(peak_table_path,'\t')
+    for line in peak_table[1:]:
+        #get the genes
+        gene_list= []
+        if len(line) == 15:
+            gene_list += line[-1].split(',')
+            gene_list += line[-2].split(',')
+        elif len(line) == 14:
+            gene_list += line[-1].split(',')
+        else:
+            continue
+
+        gene_list = utils.uniquify([gene for gene in gene_list if len(gene) >0])
+        
+        for gene in gene_list:
+            if int(line[5]) == 1:
+                tss_dict[gene]+= int(line[4])
+            else:
+                distal_dict[gene] += int(line[4])
+
+
+    #now fill out the gene table
+    gene_table = utils.parseTable(gene_table_path,'\t')
+
+    output_table = [gene_table[0] + ['TSS_LENGTH','DISTAL_LENGTH']]
+
+    for line in gene_table[1:]:
+        gene = line[0]
+        new_line = line + [tss_dict[gene],distal_dict[gene]]
+        output_table.append(new_line)
+
+    utils.unParseTable(output_table,output_path,'\t')
+
+    return output_path
+
+        
 #==========================================================================
 #==================================THE END=================================
 #==========================================================================

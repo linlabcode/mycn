@@ -94,7 +94,7 @@ tableFolder = '%stables/' % (projectFolder)
 maskFile ='%smasks/hg19_encode_blacklist.bed' % (projectFolder)
 
 #genomeDirectory
-genomeDirectory = '/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
+genomeDirectory = '/storage/cylin/grail/genomes/Homo_sapiens/UCSC/hg19/Sequence/Chromosomes/'
 
 #making folders
 folderList = [gffFolder,macsFolder,macsEnrichedFolder,mappedEnrichedFolder,mappedFolder,wiggleFolder,metaFolder,metaRoseFolder,fastaFolder,figureCodeFolder,figuresFolder,geneListFolder,bedFolder,signalFolder,tableFolder]
@@ -248,11 +248,13 @@ def main():
     # #and then map MYCN and H3K27ac signal 
 
     # print('Making a gff and bed of conserved NB MYCN regions:')
+
     # mycn_gff_path,mycn_flank_gff_path = make_mycn_regions(conserved_rank_path) 
     
     # print('Mapping MYCN and H3K27AC signal')
     # gffList = [mycn_gff_path,mycn_flank_gff_path]
-    # pipeline_dfci.map_regions(nb_all_chip_dataFile,gffList)
+    #gffList = ['%sHG19_NB_MYCN_CONSERVED_-0_+0.gff' % (gffFolder),'%sHG19_NB_MYCN_CONSERVED_-500_+500.gff' % (gffFolder)]
+    #pipeline_dfci.map_regions(nb_all_chip_dataFile,gffList,mappedFolder,signalFolder)
 
     print('\n\n')
     print('#======================================================================')
@@ -268,16 +270,18 @@ def main():
     #     print('Making MYCN stats table')        
     #     mycn_table_path = make_mycn_stats_table(nb_all_chip_dataFile,mycn_table_path)
 
+    mycn_table_path = '%stables/HG19_NB_MYCN_CONSERVED_STATS_TABLE.txt' % (projectFolder)
+    #mycn_table_path = make_mycn_stats_table(nb_all_chip_dataFile,mycn_table_path)
     print('\n\n')
     print('#======================================================================')
     print('#=================VII. MAKING VECTOR COMPARISON PLOTS==================')
     print('#======================================================================')
     print('\n\n')
 
-    # compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
-    # r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
-    # print(r_cmd)
-    # os.system(r_cmd)
+    compare_script_path = '%sr_scripts/2_nb_mycn_vector_plots.R' % (projectFolder)
+    r_cmd = 'Rscript %s %s %s' % (compare_script_path,mycn_table_path,projectFolder)
+    print(r_cmd)
+    os.system(r_cmd)
 
 
     print('\n\n')
@@ -303,8 +307,8 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
-    be2c_signal_path = pipeline_dfci.map_regions(be2c_dataFile,gffList,mappedFolder,signalFolder,[],False)
+    # gffList = ['%sHG19_TSS_ALL_-1000_+1000.gff' % (gffFolder)]
+    # be2c_signal_path = pipeline_dfci.map_regions(be2c_dataFile,gffList,mappedFolder,signalFolder,[],False)
     
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
@@ -659,7 +663,21 @@ def make_mycn_regions(conserved_rank_path):
 #~~~~~~~~~~~~~~~~~~~~~~~~~MAKING NB MYCN STATS TABLE~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
+def nmers(n,baseList=[],nmerList = []):
+    #print(baseList)
+    if len(baseList) == 0:
+        baseList =['A','T','G','C']
+    if n == 0:
+        return nmerList
+    tempList = []
+    if len(nmerList) == 0 and n == 1:
+        return baseList
+    if len(nmerList) == 0:
+        nmerList = list(baseList)
+        n = n -1
+    for base in baseList:
+        tempList = tempList + map(lambda x:x+base,nmerList)
+    return nmers(n-1,baseList,tempList)
 
 
 def make_mycn_stats_table(nb_all_chip_dataFile,outFile):
@@ -673,13 +691,13 @@ def make_mycn_stats_table(nb_all_chip_dataFile,outFile):
     dataDict = pipeline_dfci.loadDataTable(nb_all_chip_dataFile)
 
     print('SETTING UP OUTPUT TABLE')
-    outTable = [['PEAK_ID','CHROM','START','STOP','LENGTH','ACTIVE_TSS_OVERLAP','ENHANCER_OVERLAP','CPG_ISLAND_OVERLAP','CPG_ISLAND_FRACTION','GC_FREQ','MYCN_RANK','AVG_MYCN_SIGNAL','AVG_H3K27AC_SIGNAL','CANON_EBOX_COUNT','NONCANON_EBOX_COUNT','TOTAL_EBOX_COUNT']]
+    outTable = [['PEAK_ID','CHROM','START','STOP','LENGTH','ACTIVE_TSS_OVERLAP','ENHANCER_OVERLAP','CPG_ISLAND_OVERLAP','CPG_ISLAND_FRACTION','GC_FREQ','MYCN_RANK','AVG_MYCN_SIGNAL','AVG_H3K27AC_SIGNAL','CANON_EBOX_COUNT','NONCANON_EBOX_COUNT','TOTAL_EBOX_COUNT','CANON_EXP','NON_CANON_EXP','GABPA_COUNT','GABPA_EXP','GATA_COUNT','GATA_EXP']]
 
-
+    dinuc = nmers(2,['A','T','G','C'])
 
     #input files
-    mycnSignalFile = '%sHG19_NB_MYCN_CONSERVED_-0_+0_SIGNAL.txt' % (signalFolder)
-    h3k27acSignalFile = '%sHG19_NB_MYCN_CONSERVED_-500_+500_SIGNAL.txt' % (signalFolder)
+    mycnSignalFile = '%sHG19_NB_MYCN_CONSERVED_-0_+0_NB_ALL_SIGNAL.txt' % (signalFolder)
+    h3k27acSignalFile = '%sHG19_NB_MYCN_CONSERVED_-500_+500_NB_ALL_SIGNAL.txt' % (signalFolder)
     mycnRankFile = '%smeta_rose/NB_MYCN/NB_MYCN_0KB_STITCHED_ENHANCER_REGION_RANK_CONSERVED.txt' % (projectFolder)
     activeGeneFile = '%sHG19_NB_H3K27AC_ACTIVE_UNION.txt' % (geneListFolder)
     #note, this is the ucsc hg19 cpg islands extended file
@@ -812,6 +830,11 @@ def make_mycn_stats_table(nb_all_chip_dataFile,outFile):
         lineSeq = string.upper(utils.fetchSeq(genomeDirectory,chrom,start,stop,True))
         gcFreq = round(float(lineSeq.count('GC') + lineSeq.count('CG'))/len(lineSeq),2)
             
+        dinuc_dict = {}
+        for nmer in dinuc:
+            dinuc_dict[nmer] = float(lineSeq.count('GC'))/len(lineSeq)
+
+        
         mycnRankLine = mycnRankTable[i]
         mycnRank = numpy.mean([float(x) for x in mycnRankLine[6:]])
 
@@ -823,7 +846,37 @@ def make_mycn_stats_table(nb_all_chip_dataFile,outFile):
 
         non_canon_count = ebox_count-canon_count
 
-        newLine = [peakID,chrom,start,stop,lineLocus.len(),tssOverlap,enhancerOverlap,cpgIslandOverlap,overlapFraction,gcFreq,mycnRank,mycn_signal,h3k27ac_signal,canon_count,non_canon_count,ebox_count]
+        #get the expected values
+        canon_exp = dinuc_dict['CA']*dinuc_dict['CG']*dinuc_dict['TG']*(len(lineSeq) - 5)
+        canon_exp = round(canon_exp,2)
+        notCG = 1- dinuc_dict['CG']
+        non_exp = dinuc_dict['CA']*notCG*dinuc_dict['TG']*(len(lineSeq) - 5)
+        non_exp = round(non_exp,2)
+
+
+
+        #for gata and GABPA
+        gabpaMatchList = re.findall('CGGAAG',lineSeq) + re.findall('CTTCCG',lineSeq)
+        gabpa_count = len(gabpaMatchList)
+
+        gabpa_exp_f = dinuc_dict['CG'] * dinuc_dict['GA'] * dinuc_dict['AG']*(len(lineSeq) - 5)
+        gabpa_exp_r = dinuc_dict['CT'] * dinuc_dict['TC'] * dinuc_dict['CG']*(len(lineSeq) - 5)
+        
+        gabpa_exp = round(gabpa_exp_f,2) + round(gabpa_exp_r,2)
+
+        gataMatchList = re.findall('GATAA',lineSeq) + re.findall('TTATC',lineSeq)
+        gata_count = len(gataMatchList)
+
+        an_freq = 1 - dinuc_dict['AA'] - dinuc_dict['AT'] - dinuc_dict['AG'] -dinuc_dict['AC']
+        cn_freq = 1 - dinuc_dict['CA'] - dinuc_dict['CT'] - dinuc_dict['CG'] -dinuc_dict['CC']
+        gata_exp_f = dinuc_dict['GA'] * dinuc_dict['TA'] * an_freq*(len(lineSeq) - 5)
+        gata_exp_r = dinuc_dict['TT'] * dinuc_dict['AT'] * cn_freq*(len(lineSeq) - 5)
+        gata_exp = round(gata_exp_f,2) + round(gata_exp_r,2)
+
+        
+        
+
+        newLine = [peakID,chrom,start,stop,lineLocus.len(),tssOverlap,enhancerOverlap,cpgIslandOverlap,overlapFraction,gcFreq,mycnRank,mycn_signal,h3k27ac_signal,canon_count,non_canon_count,ebox_count,canon_exp,non_exp,gabpa_count,gabpa_exp,gata_count,gata_exp]
         outTable.append(newLine)
 
     utils.unParseTable(outTable,outFile,'\t')

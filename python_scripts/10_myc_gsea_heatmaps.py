@@ -164,7 +164,7 @@ def main():
 
     # #at a given fdr cutoff, grab the NES pathways  
     
-    # nes_folder = utils.formatFolder('%snes_tables/' % (projectFolder),True)
+    nes_folder = utils.formatFolder('%snes_tables/' % (projectFolder),True)
 
     # #for top 5k regions
     # nes_path_list = ['%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_top_5000_nes.txt' % (projectFolder),
@@ -201,6 +201,23 @@ def main():
     # makeNESTable(nes_path_list,names_list,output_path)
 
 
+    #for BE2C comparisons
+    nes_path_list = [
+        '%senhancerPromoter/BE2C_MYCN/BE2C_MYCN_top_5000_nes.txt' % (projectFolder), 
+        '%senhancerPromoter/BE2C_H3K27AC_REGIONS/BE2C_H3K27AC_REGIONS_top_5000_nes.txt' % (projectFolder),
+                     ]
+
+
+
+
+    names_list = ['BE2C_RNA_POL2','BE2C_MYCN','BE2C_H3K27AC','BE2C_BRD4','BE2C_TWIST']
+    names_list = ['BE2C_MYCN','BE2C_H3K27AC']
+    output_path = '%sBE2C_NES.txt' % (nes_folder)
+    makeNESTable(nes_path_list,names_list,output_path)
+
+
+
+
     print('\n\n')
     print('#======================================================================')
     print('#========================III. CALLING HEATMAP==========================')
@@ -222,6 +239,11 @@ def main():
     # wrapHeatmap(nes_path,0.1,2)
 
 
+    #for be2c
+    nes_path = '%sBE2C_NES.txt' % (nes_folder)
+    wrapHeatmap(nes_path,0.1,1.5)
+
+
     print('\n\n')
     print('#======================================================================')
     print('#=====================IV. MAKING TSS DISTAL GFFS=======================')
@@ -229,18 +251,18 @@ def main():
     print('\n\n')
 
 
-    #we want the peak list to cover NB_MYCN_CONSERVED, P4936, MM1S, H2171,U87
+    # #we want the peak list to cover NB_MYCN_CONSERVED, P4936, MM1S, H2171,U87
 
-    #for top 5k regions
-    peak_path_list = ['%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_PEAK_TABLE.txt' % (projectFolder),
-                     '%senhancerPromoter/H2171_MYC_REGIONS_H2171_MYC/H2171_MYC_REGIONS_H2171_MYC_PEAK_TABLE.txt' % (projectFolder),
-                     '%senhancerPromoter/MM1S_MYC_REGIONS_MM1S_MYC_DMSO/MM1S_MYC_REGIONS_MM1S_MYC_DMSO_PEAK_TABLE.txt' % (projectFolder),
-                     '%senhancerPromoter/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC_PEAK_TABLE.txt' % (projectFolder),
-                     '%senhancerPromoter/U87_MYC_REGIONS_U87_MYC/U87_MYC_REGIONS_U87_MYC_PEAK_TABLE.txt' % (projectFolder),
-                     ]
+    # #for top 5k regions
+    # peak_path_list = ['%senhancerPromoter/NB_MYCN_CONSERVED/NB_MYCN_CONSERVED_PEAK_TABLE.txt' % (projectFolder),
+    #                  '%senhancerPromoter/H2171_MYC_REGIONS_H2171_MYC/H2171_MYC_REGIONS_H2171_MYC_PEAK_TABLE.txt' % (projectFolder),
+    #                  '%senhancerPromoter/MM1S_MYC_REGIONS_MM1S_MYC_DMSO/MM1S_MYC_REGIONS_MM1S_MYC_DMSO_PEAK_TABLE.txt' % (projectFolder),
+    #                  '%senhancerPromoter/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC/P493-6_T24_MYC_REGIONS_P493-6_T24_MYC_PEAK_TABLE.txt' % (projectFolder),
+    #                  '%senhancerPromoter/U87_MYC_REGIONS_U87_MYC/U87_MYC_REGIONS_U87_MYC_PEAK_TABLE.txt' % (projectFolder),
+    #                  ]
 
 
-    tss_gff_path,distal_gff_path = makePeakGFFs(peak_path_list)
+    # tss_gff_path,distal_gff_path = makePeakGFFs(peak_path_list)
 
 
     print('\n\n')
@@ -249,20 +271,20 @@ def main():
     print('#======================================================================')
     print('\n\n')
 
-    gffList = [tss_gff_path,distal_gff_path]
+    # gffList = [tss_gff_path,distal_gff_path]
 
-    #will have to call map_regions 5 times
-    #first on all nb
-    dataFile_list = [nb_all_chip_dataFile,myc_high_dataFile]
-    for dataFile in dataFile_list:
+    # #will have to call map_regions 5 times
+    # #first on all nb
+    # dataFile_list = [nb_all_chip_dataFile,myc_high_dataFile]
+    # for dataFile in dataFile_list:
 
-        dataDict= pipeline_dfci.loadDataTable(dataFile)
-        names_list = [name for name in dataDict if name.count('MYC') > 0]
-        background_list = [dataDict[name]['background'] for name in names_list]
-        map_list = names_list + background_list
-        print(map_list)
+    #     dataDict= pipeline_dfci.loadDataTable(dataFile)
+    #     names_list = [name for name in dataDict if name.count('MYC') > 0]
+    #     background_list = [dataDict[name]['background'] for name in names_list]
+    #     map_list = names_list + background_list
+    #     print(map_list)
         
-        pipeline_dfci.map_regions(dataFile,gffList,mappedFolder,signalFolder,map_list,medianNorm=False,output='')
+    #     pipeline_dfci.map_regions(dataFile,gffList,mappedFolder,signalFolder,map_list,medianNorm=False,output='')
 #==========================================================================
 #===================SPECIFIC FUNCTIONS FOR ANALYSIS========================
 #==========================================================================

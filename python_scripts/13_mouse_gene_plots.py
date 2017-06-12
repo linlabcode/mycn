@@ -159,7 +159,22 @@ def main():
 
     mm9_bed_path = '%sMM9_NB_FIGURE_GENES_LIFTOVER.bed' % (bedFolder)
     mm9_gff_path = '%sMM9_NB_FIGURE_GENES_LIFTOVER.gff' % (gffFolder)
-    mm9_gff = utils.bedToGFF(mm9_bed_path,output=mm9_gff_path)
+    mm9_gff = utils.bedToGFF(mm9_bed_path)
+
+    #now add some additional manual regions
+
+    added_gff_regions = [
+        ['chr12','TWIST1_ENHANCER','TWIST1_ENHANCER',34639818,34656263,'','-','','TWIST1_ENHANCER'],
+        ['chr11','NPM1_PROMOTER_2','NPM1_PROMOTER_2',33049820,33065883,'','+','','NPM1_PROMOTER_2'],
+        ['chr6','GATA2_ENHANCER','GATA2_ENHANCER',88135802,88159867,'','+','','GATA2_ENHANCER'],
+        ['chr7','PHOX2A','PHOX2A',108964211,108974610,'','+','','PHOX2A'],
+        ['chr15','LET7B','LET7B',85497440,85538754,'','+','','LET7B',],
+        ['chr10','LIN28B','LIN28B',45161233,45217227,'','-','','LIN28B'],
+        ]
+
+    mm9_gff_full = mm9_gff+added_gff_regions
+
+    utils.unParseTable(mm9_gff_full,mm9_gff_path,'\t')
 
 
     print('\n\n')

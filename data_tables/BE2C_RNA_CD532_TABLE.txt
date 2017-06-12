@@ -2,9 +2,6 @@ FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	F
 ./bam/hg19_ercc/	20160813_6909	hg19_ercc	BE2C_DMSO_A1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6909/20160811-J1-BN3302-1_S1_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6910	hg19_ercc	BE2C_DMSO_A2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6910/20160811-J2-BN3302-1_S2_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6911	hg19_ercc	BE2C_DMSO_A3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6911/20160811-J3-BN3302-1_S3_R1_001.fastq.gz
-./bam/hg19_ercc/	20160813_6921	hg19_ercc	BE2C_DMSO_B1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6921/20160812-C1-BN3302-2_S1_R1_001.fastq.gz
-./bam/hg19_ercc/	20160813_6922	hg19_ercc	BE2C_DMSO_B2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6922/20160812-C2-BN3302-2_S2_R1_001.fastq.gz
-./bam/hg19_ercc/	20160813_6923	hg19_ercc	BE2C_DMSO_B3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6923/20160812-C3-BN3302-2_S3_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6912	hg19_ercc	BE2C_JQ1_4HR_1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6912/20160811-J4-BN3302-1_S4_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6913	hg19_ercc	BE2C_JQ1_4HR_2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6913/20160811-J5-BN3302-1_S5_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6914	hg19_ercc	BE2C_JQ1_4HR_3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6914/20160811-J6-BN3302-1_S6_R1_001.fastq.gz
@@ -14,3 +11,15 @@ FILE_PATH	UNIQUE_ID	GENOME	NAME	BACKGROUND	ENRICHED_REGION	ENRICHED_MACS	COLOR	F
 ./bam/hg19_ercc/	20160813_6918	hg19_ercc	BE2C_JQ1_24HR_1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6918/20160811-J10-BN3302-1_S10_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6919	hg19_ercc	BE2C_JQ1_24HR_2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6919/20160811-J11-BN3302-1_S11_R1_001.fastq.gz
 ./bam/hg19_ercc/	20160813_6920	hg19_ercc	BE2C_JQ1_24HR_3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6920/20160811-J12-BN3302-1_S12_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6921	hg19_ercc	BE2C_DMSO_B1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6921/20160812-C1-BN3302-2_S1_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6922	hg19_ercc	BE2C_DMSO_B2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6922/20160812-C2-BN3302-2_S2_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6923	hg19_ercc	BE2C_DMSO_B3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6923/20160812-C3-BN3302-2_S3_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6924	hg19_ercc	BE2C_CD532_4HR_1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6924/20160812-C4-BN3302-2_S4_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6925	hg19_ercc	BE2C_CD532_4HR_2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6925/20160812-C5-BN3302-2_S5_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6926	hg19_ercc	BE2C_CD532_4HR_3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6926/20160812-C6-BN3302-2_S6_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6927	hg19_ercc	BE2C_CD532_8HR_1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6927/20160812-C7-BN3302-2_S7_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6928	hg19_ercc	BE2C_CD532_8HR_2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6928/20160812-C8-BN3302-2_S8_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6929	hg19_ercc	BE2C_CD532_8HR_3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6929/20160812-C9-BN3302-2_S9_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6930	hg19_ercc	BE2C_CD532_24HR_1				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6930/20160812-C10-BN3302-2_S10_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6931	hg19_ercc	BE2C_CD532_24HR_2				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6931/20160812-C11-BN3302-2_S11_R1_001.fastq.gz
+./bam/hg19_ercc/	20160813_6932	hg19_ercc	BE2C_CD532_24HR_3				0,0,0	/grail/TONY/Bradner/Homo.sapiens.ERCC/neuroblastoma/BE.2.C/None/20160813_6932/20160812-C12-BN3302-2_S12_R1_001.fastq.gz
